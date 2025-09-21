@@ -1205,6 +1205,12 @@ body {
     margin-bottom: 1rem;
 }
 
+/* Asegurar que los títulos principales estén centrados */
+.text-center .section-title {
+    display: block;
+    text-align: center;
+}
+
 .section-subtitle {
     font-size: 1.2rem;
     color: var(--dark-gray);
