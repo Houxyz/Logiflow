@@ -10,6 +10,20 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f8f9fa;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.main-content {
+    width: 100%;
+    overflow: visible;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    overflow: visible;
 }
 
 /* Variables CSS para colores de logística */
@@ -621,8 +635,9 @@ body {
 }
 
 .section-content.expanded {
-    max-height: 1000px;
+    max-height: none;
     padding: 2rem;
+    overflow: visible;
 }
 
 .subsections-grid {
