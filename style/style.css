@@ -39,12 +39,19 @@ body {
 }
 
 .nav-container {
-    max-width: 1400px;
+    max-width: none;
     margin: 0;
-    padding: 0 3rem;
+    padding: 0 3rem 0 3rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
 }
 
 .logo {
@@ -59,10 +66,7 @@ body {
     margin-right: 0.5rem;
 }
 
-.nav-buttons {
-    display: flex;
-    gap: 1rem;
-}
+
 
 /* Botones principales */
 .btn {
@@ -337,16 +341,19 @@ body {
 .register-container {
     min-height: 100vh;
     background: linear-gradient(135deg, var(--light-gray) 0%, #f8fafc 100%);
-    padding: 6rem 3rem 2rem;
+    padding: 6rem 2rem 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 .register-wrapper {
     background: white;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    max-width: 1200px;
+    max-width: none;
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
     overflow: hidden;
     animation: fadeInUp 0.3s ease-out;
 }
@@ -1458,24 +1465,35 @@ body {
     
     .register-container {
         padding: 6rem 4rem 2rem;
+        justify-content: center;
     }
     
     .register-wrapper {
         max-width: 1400px;
+        width: 100%;
     }
 }
 
 @media (max-width: 768px) {
     .nav-container {
         padding: 0 1.5rem;
+        justify-content: space-between;
+    }
+    
+    .nav-buttons {
+        margin-left: 0;
     }
     
     .register-container {
         padding: 5rem 1.5rem 2rem;
+        justify-content: center;
     }
     
     .register-wrapper {
+        margin: 0;
+        width: 100%;
         border-radius: 15px;
+        max-width: 600px;
     }
     
     .register-content {
@@ -1498,10 +1516,13 @@ body {
     
     .register-container {
         padding: 5rem 1rem 2rem;
+        justify-content: center;
     }
     
     .register-wrapper {
         border-radius: 10px;
+        max-width: none;
+        width: 100%;
     }
     
     .register-info {
