@@ -1593,6 +1593,48 @@ body {
     gap: 1rem;
 }
 
+.subscription-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #fff;
+    font-size: 14px;
+}
+
+.subscription-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.subscription-status i {
+    color: #ffd700;
+    font-size: 16px;
+}
+
+.subscription-time {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #1a1a1a;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.account-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.account-name i {
+    color: #64b5f6;
+    font-size: 14px;
+}
+
 .user-info {
     display: flex;
     align-items: center;
@@ -2157,8 +2199,31 @@ body {
         font-size: 1.25rem;
     }
     
+    .nav-user {
+        gap: 10px;
+    }
+    
+    .subscription-info {
+        font-size: 12px;
+        gap: 2px;
+    }
+    
+    .subscription-time {
+        font-size: 10px;
+        padding: 1px 6px;
+    }
+    
+    .account-name {
+        font-size: 12px;
+    }
+    
     .user-info span {
         display: none;
+    }
+    
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 12px;
     }
     
     .logout-btn span {
