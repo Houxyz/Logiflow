@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - LogiFlow</title>
+    <link rel="stylesheet" href="style/style.css">
+    <meta name="description" content="Regístrate en LogiFlow y optimiza tu gestión logística con nuestros planes de suscripción">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="landing.html" class="logo">LogiFlow</a>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn btn-secondary">Iniciar Sesión</a>
+                <a href="landing.html" class="btn btn-outline">Volver al Inicio</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenedor principal de registro -->
+    <div class="register-container">
+        <div class="register-wrapper">
+            <!-- Header del registro -->
+            <div class="register-header">
+                <h1>Únete a LogiFlow</h1>
+                <p>Optimiza tu gestión logística con nuestros planes profesionales</p>
+                <div class="register-steps">
+                    <div class="step active" data-step="1">
+                        <span class="step-number">1</span>
+                        <span class="step-text">Información</span>
+                    </div>
+                    <div class="step" data-step="2">
+                        <span class="step-number">2</span>
+                        <span class="step-text">Plan</span>
+                    </div>
+                    <div class="step" data-step="3">
+                        <span class="step-number">3</span>
+                        <span class="step-text">Confirmación</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario multi-paso -->
+            <div class="register-form-container">
+                <!-- Paso 1: Información Personal y Empresa -->
+                <div class="form-step active" id="step1">
+                    <div class="step-content">
+                        <h2>Información de la Empresa</h2>
+                        <p>Cuéntanos sobre tu empresa para personalizar tu experiencia</p>
+                        
+                        <form class="register-form" id="registerForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="companyName" class="form-label">Nombre de la Empresa *</label>
+                                    <input 
+                                        type="text" 
+                                        id="companyName" 
+                                        name="companyName" 
+                                        class="form-input" 
+                                        placeholder="Ej: Transportes ABC S.A."
+                                        required
+                                    >
+                                    <div class="form-error" id="companyNameError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="industry" class="form-label">Industria *</label>
+                                    <select id="industry" name="industry" class="form-input" required>
+                                        <option value="">Selecciona tu industria</option>
+                                        <option value="transporte">Transporte y Logística</option>
+                                        <option value="retail">Retail y E-commerce</option>
+                                        <option value="manufactura">Manufactura</option>
+                                        <option value="alimentos">Alimentos y Bebidas</option>
+                                        <option value="farmaceutica">Farmacéutica</option>
+                                        <option value="automotriz">Automotriz</option>
+                                        <option value="construccion">Construcción</option>
+                                        <option value="otros">Otros</option>
+                                    </select>
+                                    <div class="form-error" id="industryError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="companySize" class="form-label">Tamaño de la Empresa *</label>
+                                    <select id="companySize" name="companySize" class="form-input" required>
+                                        <option value="">Selecciona el tamaño</option>
+                                        <option value="1-10">1-10 empleados</option>
+                                        <option value="11-50">11-50 empleados</option>
+                                        <option value="51-200">51-200 empleados</option>
+                                        <option value="201-500">201-500 empleados</option>
+                                        <option value="500+">Más de 500 empleados</option>
+                                    </select>
+                                    <div class="form-error" id="companySizeError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fleetSize" class="form-label">Tamaño de Flota</label>
+                                    <select id="fleetSize" name="fleetSize" class="form-input">
+                                        <option value="">Selecciona el tamaño</option>
+                                        <option value="1-5">1-5 vehículos</option>
+                                        <option value="6-20">6-20 vehículos</option>
+                                        <option value="21-50">21-50 vehículos</option>
+                                        <option value="51-100">51-100 vehículos</option>
+                                        <option value="100+">Más de 100 vehículos</option>
+                                        <option value="no-fleet">No tengo flota propia</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName" class="form-label">Nombre del Contacto *</label>
+                                    <input 
+                                        type="text" 
+                                        id="firstName" 
+                                        name="firstName" 
+                                        class="form-input" 
+                                        placeholder="Tu nombre"
+                                        required
+                                    >
+                                    <div class="form-error" id="firstNameError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName" class="form-label">Apellido *</label>
+                                    <input 
+                                        type="text" 
+                                        id="lastName" 
+                                        name="lastName" 
+                                        class="form-input" 
+                                        placeholder="Tu apellido"
+                                        required
+                                    >
+                                    <div class="form-error" id="lastNameError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Correo Electrónico Corporativo *</label>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        class="form-input" 
+                                        placeholder="contacto@tuempresa.com"
+                                        required
+                                    >
+                                    <div class="form-error" id="emailError"></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Teléfono *</label>
+                                    <input 
+                                        type="tel" 
+                                        id="phone" 
+                                        name="phone" 
+                                        class="form-input" 
+                                        placeholder="+1 (555) 123-4567"
+                                        required
+                                    >
+                                    <div class="form-error" id="phoneError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="position" class="form-label">Cargo/Posición *</label>
+                                <input 
+                                    type="text" 
+                                    id="position" 
+                                    name="position" 
+                                    class="form-input" 
+                                    placeholder="Ej: Gerente de Logística, CEO, Director de Operaciones"
+                                    required
+                                >
+                                <div class="form-error" id="positionError"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="currentChallenges" class="form-label">Principales Desafíos Logísticos (Opcional)</label>
+                                <textarea 
+                                    id="currentChallenges" 
+                                    name="currentChallenges" 
+                                    class="form-textarea" 
+                                    placeholder="Describe brevemente los principales retos que enfrenta tu empresa en logística..."
+                                    rows="3"
+                                ></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-primary btn-large" onclick="nextStep()">
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Selección de Plan -->
+                <div class="form-step" id="step2">
+                    <div class="step-content">
+                        <h2>Selecciona tu Plan</h2>
+                        <p>Elige el plan que mejor se adapte a las necesidades de tu empresa</p>
+                        
+                        <div class="pricing-grid">
+                            <!-- Plan Básico -->
+                            <div class="pricing-card" data-plan="basic">
+                                <div class="plan-header">
+                                    <h3>Básico</h3>
+                                    <div class="plan-price">
+                                        <span class="currency">$</span>
+                                        <span class="amount">99</span>
+                                        <span class="period">/mes</span>
+                                    </div>
+                                    <p class="plan-description">Perfecto para pequeñas empresas</p>
+                                </div>
+                                <div class="plan-features">
+                                    <ul>
+                                        <li>✓ Hasta 5 vehículos</li>
+                                        <li>✓ Seguimiento básico GPS</li>
+                                        <li>✓ Reportes estándar</li>
+                                        <li>✓ Soporte por email</li>
+                                        <li>✓ 1 usuario administrador</li>
+                                        <li>✓ Integración básica</li>
+                                    </ul>
+                                </div>
+                                <div class="plan-trial">
+                                    <span class="trial-badge">14 días gratis</span>
+                                </div>
+                            </div>
+
+                            <!-- Plan Profesional -->
+                            <div class="pricing-card featured" data-plan="professional">
+                                <div class="plan-badge">Más Popular</div>
+                                <div class="plan-header">
+                                    <h3>Profesional</h3>
+                                    <div class="plan-price">
+                                        <span class="currency">$</span>
+                                        <span class="amount">299</span>
+                                        <span class="period">/mes</span>
+                                    </div>
+                                    <p class="plan-description">Ideal para empresas en crecimiento</p>
+                                </div>
+                                <div class="plan-features">
+                                    <ul>
+                                        <li>✓ Hasta 50 vehículos</li>
+                                        <li>✓ GPS avanzado + telemetría</li>
+                                        <li>✓ Optimización de rutas IA</li>
+                                        <li>✓ Analytics avanzados</li>
+                                        <li>✓ Soporte prioritario 24/7</li>
+                                        <li>✓ 5 usuarios administradores</li>
+                                        <li>✓ API completa</li>
+                                        <li>✓ Alertas en tiempo real</li>
+                                    </ul>
+                                </div>
+                                <div class="plan-trial">
+                                    <span class="trial-badge">30 días gratis</span>
+                                </div>
+                            </div>
+
+                            <!-- Plan Empresarial -->
+                            <div class="pricing-card" data-plan="enterprise">
+                                <div class="plan-header">
+                                    <h3>Empresarial</h3>
+                                    <div class="plan-price">
+                                        <span class="currency">$</span>
+                                        <span class="amount">799</span>
+                                        <span class="period">/mes</span>
+                                    </div>
+                                    <p class="plan-description">Para grandes operaciones</p>
+                                </div>
+                                <div class="plan-features">
+                                    <ul>
+                                        <li>✓ Vehículos ilimitados</li>
+                                        <li>✓ Suite completa de herramientas</li>
+                                        <li>✓ IA predictiva avanzada</li>
+                                        <li>✓ Dashboard ejecutivo</li>
+                                        <li>✓ Gerente de cuenta dedicado</li>
+                                        <li>✓ Usuarios ilimitados</li>
+                                        <li>✓ Integraciones personalizadas</li>
+                                        <li>✓ SLA garantizado 99.9%</li>
+                                        <li>✓ Capacitación incluida</li>
+                                    </ul>
+                                </div>
+                                <div class="plan-trial">
+                                    <span class="trial-badge">60 días gratis</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="plan-selection-info">
+                            <div class="info-box">
+                                <h4>🔒 Registro Pendiente de Aprobación</h4>
+                                <p>Tu registro será revisado por nuestro equipo en un plazo de 24-48 horas. Recibirás un correo de confirmación una vez aprobado.</p>
+                            </div>
+                            <div class="info-box">
+                                <h4>💳 Activación por Pago</h4>
+                                <p>Una vez aprobado, recibirás un enlace seguro para procesar el pago y activar tu suscripción inmediatamente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                            Anterior
+                        </button>
+                        <button type="button" class="btn btn-primary btn-large" onclick="nextStep()" id="continueWithPlan" disabled>
+                            Continuar con Plan Seleccionado
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Confirmación -->
+                <div class="form-step" id="step3">
+                    <div class="step-content">
+                        <h2>Confirma tu Registro</h2>
+                        <p>Revisa la información antes de enviar tu solicitud</p>
+                        
+                        <div class="confirmation-summary">
+                            <div class="summary-section">
+                                <h3>Información de la Empresa</h3>
+                                <div class="summary-grid">
+                                    <div class="summary-item">
+                                        <span class="label">Empresa:</span>
+                                        <span class="value" id="summaryCompany">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Industria:</span>
+                                        <span class="value" id="summaryIndustry">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Contacto:</span>
+                                        <span class="value" id="summaryContact">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="label">Email:</span>
+                                        <span class="value" id="summaryEmail">-</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="summary-section">
+                                <h3>Plan Seleccionado</h3>
+                                <div class="selected-plan-summary" id="selectedPlanSummary">
+                                    <!-- Se llenará dinámicamente -->
+                                </div>
+                            </div>
+
+                            <div class="summary-section">
+                                <h3>Próximos Pasos</h3>
+                                <div class="next-steps">
+                                    <div class="step-item">
+                                        <span class="step-icon">1️⃣</span>
+                                        <div class="step-text">
+                                            <strong>Revisión (24-48h)</strong>
+                                            <p>Nuestro equipo revisará tu solicitud</p>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <span class="step-icon">2️⃣</span>
+                                        <div class="step-text">
+                                            <strong>Aprobación por Email</strong>
+                                            <p>Recibirás confirmación y enlace de pago</p>
+                                        </div>
+                                    </div>
+                                    <div class="step-item">
+                                        <span class="step-icon">3️⃣</span>
+                                        <div class="step-text">
+                                            <strong>Activación Inmediata</strong>
+                                            <p>Acceso completo tras procesar el pago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="terms-section">
+                            <label class="checkbox-wrapper">
+                                <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                                <span class="checkmark"></span>
+                                Acepto los <a href="#" class="link-primary">Términos y Condiciones</a> y la <a href="#" class="link-primary">Política de Privacidad</a>
+                            </label>
+                            <label class="checkbox-wrapper">
+                                <input type="checkbox" id="acceptMarketing" name="acceptMarketing">
+                                <span class="checkmark"></span>
+                                Deseo recibir actualizaciones y ofertas especiales por email
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="step-actions">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep()">
+                            Anterior
+                        </button>
+                        <button type="button" class="btn btn-primary btn-large" onclick="submitRegistration()" id="submitBtn">
+                            Enviar Solicitud de Registro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>¡Solicitud Enviada!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="success-icon">✅</div>
+                <h4>Tu solicitud ha sido enviada exitosamente</h4>
+                <p>Hemos recibido tu solicitud de registro para LogiFlow. Nuestro equipo la revisará en las próximas 24-48 horas.</p>
+                <div class="confirmation-details">
+                    <p><strong>Número de solicitud:</strong> <span id="requestNumber">LF-2024-001234</span></p>
+                    <p><strong>Email de confirmación enviado a:</strong> <span id="confirmationEmail">-</span></p>
+                </div>
+                <div class="next-steps-modal">
+                    <h5>¿Qué sigue?</h5>
+                    <ul>
+                        <li>Recibirás un email de confirmación inmediatamente</li>
+                        <li>Nuestro equipo revisará tu solicitud</li>
+                        <li>Te contactaremos para confirmar detalles si es necesario</li>
+                        <li>Una vez aprobado, recibirás el enlace de activación</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-primary" onclick="closeConfirmationModal()">Entendido</button>
+                <a href="landing.html" class="btn btn-secondary">Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let currentStep = 1;
+        let selectedPlan = null;
+        let formData = {};
+
+        // Navegación entre pasos
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < 3) {
+                    document.querySelector(`#step${currentStep}`).classList.remove('active');
+                    document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+                    document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('completed');
+                    
+                    currentStep++;
+                    
+                    document.querySelector(`#step${currentStep}`).classList.add('active');
+                    document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                    
+                    if (currentStep === 3) {
+                        updateSummary();
+                    }
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                document.querySelector(`#step${currentStep}`).classList.remove('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('active');
+                
+                currentStep--;
+                
+                document.querySelector(`#step${currentStep}`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+                document.querySelector(`.step[data-step="${currentStep}"]`).classList.remove('completed');
+            }
+        }
+
+        // Validación de pasos
+        function validateCurrentStep() {
+            if (currentStep === 1) {
+                return validateStep1();
+            } else if (currentStep === 2) {
+                return validateStep2();
+            }
+            return true;
+        }
+
+        function validateStep1() {
+            const requiredFields = ['companyName', 'industry', 'companySize', 'firstName', 'lastName', 'email', 'phone', 'position'];
+            let isValid = true;
+
+            // Limpiar errores previos
+            requiredFields.forEach(field => {
+                document.getElementById(field + 'Error').textContent = '';
+            });
+
+            // Validar campos requeridos
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (!input.value.trim()) {
+                    showError(field + 'Error', 'Este campo es requerido');
+                    isValid = false;
+                }
+            });
+
+            // Validar email
+            const email = document.getElementById('email').value;
+            if (email && !isValidEmail(email)) {
+                showError('emailError', 'Ingresa un email válido');
+                isValid = false;
+            }
+
+            // Validar email corporativo
+            if (email && !isValidCorporateEmail(email)) {
+                showError('emailError', 'Usa un email corporativo (no gmail, yahoo, etc.)');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function validateStep2() {
+            if (!selectedPlan) {
+                alert('Por favor selecciona un plan para continuar');
+                return false;
+            }
+            return true;
+        }
+
+        // Selección de plan
+        document.addEventListener('DOMContentLoaded', function() {
+            const pricingCards = document.querySelectorAll('.pricing-card');
+            
+            pricingCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remover selección previa
+                    pricingCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Seleccionar nueva tarjeta
+                    this.classList.add('selected');
+                    selectedPlan = this.dataset.plan;
+                    
+                    // Habilitar botón continuar
+                    document.getElementById('continueWithPlan').disabled = false;
+                    document.getElementById('continueWithPlan').textContent = `Continuar con Plan ${this.querySelector('h3').textContent}`;
+                });
+            });
+        });
+
+        // Actualizar resumen
+        function updateSummary() {
+            // Recopilar datos del formulario
+            formData = {
+                companyName: document.getElementById('companyName').value,
+                industry: document.getElementById('industry').value,
+                companySize: document.getElementById('companySize').value,
+                fleetSize: document.getElementById('fleetSize').value,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                position: document.getElementById('position').value,
+                currentChallenges: document.getElementById('currentChallenges').value,
+                selectedPlan: selectedPlan
+            };
+
+            // Actualizar resumen
+            document.getElementById('summaryCompany').textContent = formData.companyName;
+            document.getElementById('summaryIndustry').textContent = document.getElementById('industry').selectedOptions[0].text;
+            document.getElementById('summaryContact').textContent = `${formData.firstName} ${formData.lastName}`;
+            document.getElementById('summaryEmail').textContent = formData.email;
+
+            // Actualizar plan seleccionado
+            const selectedCard = document.querySelector(`.pricing-card[data-plan="${selectedPlan}"]`);
+            const planName = selectedCard.querySelector('h3').textContent;
+            const planPrice = selectedCard.querySelector('.plan-price').textContent;
+            
+            document.getElementById('selectedPlanSummary').innerHTML = `
+                <div class="plan-summary-card">
+                    <h4>${planName}</h4>
+                    <div class="plan-price-summary">${planPrice}</div>
+                    <p>Período de prueba incluido</p>
+                </div>
+            `;
+        }
+
+        // Enviar registro
+        function submitRegistration() {
+            const acceptTerms = document.getElementById('acceptTerms').checked;
+            
+            if (!acceptTerms) {
+                alert('Debes aceptar los términos y condiciones para continuar');
+                return;
+            }
+
+            // Simular envío
+            const requestNumber = 'LF-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 900000 + 100000);
+            
+            document.getElementById('requestNumber').textContent = requestNumber;
+            document.getElementById('confirmationEmail').textContent = formData.email;
+            
+            // Mostrar modal de confirmación
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+
+        // Funciones auxiliares
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidCorporateEmail(email) {
+            const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com'];
+            const domain = email.split('@')[1];
+            return !personalDomains.includes(domain.toLowerCase());
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+            // Redirigir al landing page
+            setTimeout(() => {
+                window.location.href = 'landing.html';
+            }, 500);
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmationModal');
+            if (event.target === modal) {
+                closeConfirmationModal();
+            }
+        }
+    </script>
+</body>
+</html>
