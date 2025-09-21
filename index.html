@@ -18,29 +18,43 @@
 
     <!-- Contenido principal (oculto hasta verificar autenticación) -->
     <div id="main-content" class="hidden">
-        <!-- Header -->
-        <header class="dashboard-header">
-            <div class="header-container">
-                <div class="nav-brand">
-                    <h2><i class="fas fa-boxes"></i> LogiFlow</h2>
-                </div>
-                <div class="nav-center">
-                    <a href="index.html" class="home-btn">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
+        <!-- Header coherente con landing -->
+        <header class="header">
+            <nav class="nav-container">
+                <a href="landing.html" class="logo">LogiFlow</a>
+                
+                <!-- Menú hamburguesa -->
+                <button class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Navegación principal -->
+                <div class="nav-links" id="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="information.html" class="nav-link">
+                        <i class="fas fa-info-circle"></i> Información
+                    </a>
+                    <a href="dashboard-user.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </div>
-                <div class="header-actions">
+                
+                <!-- Botones de usuario -->
+                <div class="nav-buttons">
                     <div class="user-info">
                         <span id="user-name">Usuario</span>
                         <i class="fas fa-user-circle"></i>
                     </div>
-                    <button class="logout-btn" onclick="logout()">
+                    <button class="btn btn-secondary logout-btn" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i>
                         Cerrar Sesión
                     </button>
                 </div>
-            </div>
+            </nav>
         </header>
 
         <!-- Contenido principal -->
@@ -618,6 +632,36 @@
             link.click();
             document.body.removeChild(link);
         }
+
+        // Funcionalidad del menú hamburguesa
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const navLinks = document.getElementById('nav-links');
+            
+            if (hamburgerMenu && navLinks) {
+                hamburgerMenu.addEventListener('click', function() {
+                    hamburgerMenu.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+
+                // Cerrar menú al hacer clic en un enlace
+                const navLinkItems = navLinks.querySelectorAll('.nav-link');
+                navLinkItems.forEach(link => {
+                    link.addEventListener('click', function() {
+                        hamburgerMenu.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    });
+                });
+
+                // Cerrar menú al hacer clic fuera
+                document.addEventListener('click', function(event) {
+                    if (!hamburgerMenu.contains(event.target) && !navLinks.contains(event.target)) {
+                        hamburgerMenu.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>

@@ -20,10 +20,147 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 95%;
+    width: 100%;
     margin: 0 auto;
     padding: 2rem;
     overflow: visible;
+}
+
+/* Para pantallas muy grandes, limitar a un máximo razonable */
+@media (min-width: 1920px) {
+    .container {
+        max-width: 1800px;
+    }
+}
+
+/* Para pantallas medianas-grandes */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 90%;
+    }
+}
+
+/* Layout mejorado para pantallas grandes - más espacioso */
+@media (min-width: 1200px) {
+    .sections-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+    
+    /* La sección de bienvenida ocupa todo el ancho */
+    .welcome-section {
+        grid-column: 1 / -1;
+        margin-bottom: 3rem;
+    }
+    
+    /* Subsecciones con mejor espaciado */
+    .subsections-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    
+    /* Sección de bienvenida más equilibrada */
+    .welcome-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: none;
+    }
+    
+    .welcome-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        margin-top: 2rem;
+        justify-items: center;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 2rem;
+        min-width: 150px;
+    }
+}
+
+/* Para pantallas extra grandes - mantener diseño equilibrado */
+@media (min-width: 1600px) {
+    .sections-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .subsections-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+    }
+    
+    .container {
+        padding: 2rem 3rem;
+    }
+    
+    /* Tarjetas con mejor proporción */
+    .subsection-card, .pdf-card {
+        padding: 2rem;
+        min-height: 200px;
+    }
+    
+    /* Estadísticas más espaciosas */
+    .welcome-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4rem;
+        max-width: 800px;
+        margin: 2rem auto 0;
+    }
+}
+
+/* Asegurar diseño responsive para móviles */
+@media (max-width: 768px) {
+    .sections-container {
+        display: block !important;
+        grid-template-columns: none !important;
+        gap: 1rem;
+    }
+    
+    .welcome-content {
+        display: block !important;
+        grid-template-columns: none !important;
+        gap: 1rem;
+    }
+    
+    .welcome-stats {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .subsections-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+    
+    .container {
+        padding: 1rem !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-stats {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .stat-item {
+        padding: 1rem !important;
+    }
+    
+    .container {
+        padding: 0.5rem !important;
+    }
 }
 
 /* Variables CSS para colores de logística */
@@ -42,7 +179,7 @@ body {
 
 /* Header */
 .header {
-    background: var(--white);
+    background-color: #f8f9fa;
     box-shadow: var(--shadow);
     position: fixed;
     top: 0;
@@ -50,34 +187,40 @@ body {
     right: 0;
     z-index: 1000;
     padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
 }
 
 .nav-container {
     max-width: none;
     margin: 0;
-    padding: 0 3rem 0 3rem;
+    padding: 0 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    gap: 2rem;
 }
 
 .nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 3rem;
     align-items: center;
 }
 
 .nav-link {
-    color: white;
+    color: #333;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .nav-link:hover {
-    color: #64b5f6;
+    color: #667eea;
+    transform: translateY(-2px);
 }
 
 .nav-link::after {
@@ -86,9 +229,10 @@ body {
     width: 0;
     height: 2px;
     bottom: -5px;
-    left: 0;
-    background-color: #64b5f6;
-    transition: width 0.3s ease;
+    left: 50%;
+    background-color: #667eea;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 
 .nav-link:hover::after {
@@ -97,20 +241,144 @@ body {
 
 .nav-buttons {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-left: auto;
 }
 
 .logo {
     font-size: 1.8rem;
     font-weight: bold;
-    color: var(--primary-color);
+    color: #333;
     text-decoration: none;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    color: #667eea;
 }
 
 .logo::before {
     content: "📦";
     margin-right: 0.5rem;
+}
+
+/* Menú hamburguesa */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 3px 0;
+    transition: 0.3s;
+    border-radius: 2px;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Estilos para la información del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-color);
+    font-weight: 500;
+    margin-right: 1rem;
+}
+
+.user-info i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: flex;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 80px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background: var(--white);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding-top: 2rem;
+        transition: left 0.3s ease;
+        gap: 1.5rem;
+        box-shadow: var(--shadow);
+    }
+    
+    .nav-links.active {
+        left: 0;
+    }
+    
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+        width: 80%;
+        text-align: center;
+        border-radius: 8px;
+        background: var(--light-bg);
+        color: var(--text-color);
+        border: 2px solid transparent;
+    }
+    
+    .nav-link:hover {
+        border-color: var(--primary-color);
+        background: white;
+    }
+    
+    .nav-buttons {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: column;
+        gap: 1rem;
+        z-index: 1002;
+        width: 80%;
+    }
+    
+    .nav-links.active ~ .nav-buttons {
+        display: flex;
+    }
+    
+    .nav-buttons .user-info {
+        background: var(--light-bg);
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        justify-content: center;
+        border: 2px solid var(--primary-color);
+    }
+    
+    .nav-container {
+        padding: 0 1rem;
+    }
 }
 
 
@@ -162,10 +430,11 @@ body {
     margin-top: 80px;
 }
 
-.hero-container {
-    max-width: 1200px;
+.container {
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 2rem 3rem;
+    width: 95%;
 }
 
 .hero h1 {
@@ -428,8 +697,17 @@ body {
 }
 
 .contact-section {
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #4a6fa5 0%, #3b5998 100%);
     padding: 4rem 0;
+    color: white;
+}
+
+.contact-section .section-title {
+    color: white;
+}
+
+.contact-section .section-subtitle {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .contact-grid {
@@ -642,19 +920,25 @@ body {
 
 .subsections-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .subsection-card {
     background: #f8f9fa;
-    padding: 2rem;
-    border-radius: 12px;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
     text-align: center;
     transition: all 0.3s ease;
     border: 2px solid transparent;
     opacity: 0;
     transform: translateY(20px);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .subsection-card.animate {
