@@ -223,9 +223,24 @@
         }
 
         function showSuccessMessage() {
-            alert('¡Login exitoso! Redirigiendo al dashboard...');
-            // Aquí redirigiríamos al dashboard
-            // window.location.href = 'dashboard.html';
+            const email = document.getElementById('email').value;
+            
+            // Establecer variables de sesión
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userName', email.split('@')[0]); // Usar parte del email como nombre
+            
+            // Determinar tipo de usuario basado en el email (simulación)
+            if (email.includes('admin')) {
+                localStorage.setItem('userType', 'admin');
+            } else {
+                localStorage.setItem('userType', 'user');
+            }
+            
+            // Mostrar mensaje de éxito
+            alert('¡Login exitoso! Redirigiendo al home...');
+            
+            // Redirigir al home
+            window.location.href = 'index.html';
         }
 
         // Modal de recuperar contraseña
