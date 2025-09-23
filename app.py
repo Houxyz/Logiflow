@@ -1,6 +1,10 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.exceptions import RequestValidationError, HTTPException
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import uvicorn
 import os
 from pathlib import Path
@@ -39,6 +43,9 @@ app.middleware("http")(AuthMiddleware())
 # Configurar directorios de plantillas y archivos estáticos
 BASE_DIR = Path(__file__).resolve().parent
 
+# Configurar Jinja2Templates para las páginas de error
+templates = Jinja2Templates(directory=str(BASE_DIR / "web_app" / "templates"))
+
 # Montar archivos estáticos
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "web_app" / "templates" / "style")), name="static")
 # Montar la carpeta templates como estática para acceder a los recursos
@@ -49,6 +56,29 @@ app.include_router(web_router)
 app.include_router(api_router)
 app.include_router(auth_router)
 app.include_router(admin_api_router)
+
+# Manejadores de errores personalizados
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """Manejador personalizado para errores HTTP"""
+    if exc.status_code == 404:
+        return templates.TemplateResponse("pages/error_404.html", {"request": request}, status_code=404)
+    elif exc.status_code == 500:
+        return templates.TemplateResponse("pages/error_500.html", {"request": request}, status_code=500)
+    # Para otros códigos de error, usar el manejador predeterminado
+    raise exc
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Manejador personalizado para errores de validación"""
+    # Los errores de validación se muestran como error 500
+    return templates.TemplateResponse("pages/error_500.html", {"request": request}, status_code=500)
+
+# Manejador para excepciones no controladas (error 500)
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc: Exception):
+    """Manejador para excepciones generales no controladas"""
+    return templates.TemplateResponse("pages/error_500.html", {"request": request}, status_code=500)
 
 # Punto de entrada para ejecutar la aplicación
 if __name__ == "__main__":
