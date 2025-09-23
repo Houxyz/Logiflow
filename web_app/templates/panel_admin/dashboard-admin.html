@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiFlow - Panel de Administración</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind con colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
+                        accent: '#e74c3c',
+                        success: '#27ae60',
+                        warning: '#f39c12',
+                        danger: '#e74c3c'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-in-right': 'fadeInRight 0.5s ease-out',
+                        'fade-in-down': 'fadeInDown 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'gradient': 'gradientAnimation 10s ease infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        fadeInDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        gradientAnimation: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 15px rgba(0, 0, 0, 0.05)',
+                        'hover': '0 10px 25px rgba(0, 0, 0, 0.1)'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Importar scripts de autenticación -->
+    <script src="/templates/style/auth.js"></script>
+    <script src="/templates/style/dashboard-admin.js"></script>
+    <script src="/templates/style/admin-stats.js"></script>
+    <!-- Script para menú responsive mejorado -->
+    <script src="/templates/style/responsive-menu.js"></script>
+    <script src="/templates/style/admin-responsive.js"></script>
+    <!-- Script para submenús móviles en el panel de administración -->
+    <script src="/templates/style/admin-mobile-menu.js"></script>
+    <!-- Script para submenús móviles específicos del panel de administración -->
+    <script src="/templates/panel_admin/mobile-submenu.js"></script>
+    <style>
+        /* Estilos adicionales para el menú responsivo */
+        #sidebar-toggle.rotate-90 i {
+            transform: rotate(90deg);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Mejoras para dispositivos móviles */
+        @media (max-width: 768px) {
+            #sidebar {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 h-screen overflow-x-hidden">
+    <!-- Header Navigation mejorado -->    
+    <nav class="bg-primary text-white shadow-lg z-50 sticky top-0">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <button id="sidebar-toggle" class="mr-3 text-white hover:text-gray-200 focus:outline-none transition-transform duration-300 ease-in-out">
+                    <i class="fas fa-bars text-xl transition-transform duration-300"></i>
+                </button>
+                <div class="flex items-center">
+                    <i class="fas fa-cube text-xl mr-2 text-secondary"></i>
+                    <span class="font-bold text-lg">LogiFlow Admin</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center">
+                <a href="/" class="flex items-center px-4 py-2 rounded-lg bg-secondary text-white hover:bg-secondary/90 transition-all duration-300 shadow-soft transform hover:-translate-y-0.5">
+                    <i class="fas fa-home mr-2"></i>
+                    <span>Ir al Home</span>
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center bg-white/10 px-3 py-1 rounded-lg hover:bg-white/20 transition-all duration-300">
+                    <i class="fas fa-user-shield mr-2 text-secondary"></i>
+                    <span id="user-name" class="mr-1 font-medium">Administrador</span>
+                    <span id="user-email" class="text-sm opacity-75"></span>
+                </div>
+                <button class="flex items-center px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300" onclick="logout()">
+                    <i class="fas fa-sign-out-alt mr-2"></i>
+                    <span class="hidden md:inline">Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar mejorado con comportamiento responsivo -->
+    <aside class="fixed left-0 top-[57px] w-64 h-[calc(100vh-57px)] bg-primary text-white z-40 transform transition-transform duration-300 md:translate-x-0 -translate-x-full shadow-lg" id="sidebar">
+        <div class="p-5 h-full overflow-y-auto">
+            <div class="mb-8">
+                <div class="flex items-center justify-center mb-6 pb-4 border-b border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center text-white mr-3">
+                        <i class="fas fa-user-shield text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm">Panel de Control</h3>
+                        <p class="text-xs text-white/70">Administración LogiFlow</p>
+                    </div>
+                </div>
+                <h3 class="text-xs uppercase tracking-wider text-white/60 mb-3 font-semibold">Dashboard</h3>
+                <ul>
+                    <li class="menu-item active" data-section="dashboard-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg bg-secondary text-white hover:bg-secondary/90 transition-all duration-300 shadow-soft">
+                            <i class="fas fa-tachometer-alt w-5 text-center mr-3"></i>
+                            <span>Estadísticas</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-xs uppercase tracking-wider text-white/60 mb-3 font-semibold">Material Didáctico</h3>
+                <ul class="space-y-2">
+                    <li class="menu-item" data-section="upload-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-upload w-5 text-center mr-3 text-secondary"></i>
+                            <span>Cargar Material</span>
+                        </a>
+                    </li>
+                    <li class="menu-item" data-section="files-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-folder-open w-5 text-center mr-3 text-secondary"></i>
+                            <span>Gestionar Archivos</span>
+                        </a>
+                    </li>
+                    <li class="menu-item" data-section="categories-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-tags w-5 text-center mr-3 text-secondary"></i>
+                            <span>Categorías</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="text-xs uppercase tracking-wider text-white/60 mb-3 font-semibold">Leyes y Normativas</h3>
+                <ul class="space-y-2">
+                    <li class="menu-item" data-section="import-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-balance-scale w-5 text-center mr-3 text-secondary"></i>
+                            <span>Importación</span>
+                        </a>
+                    </li>
+                    <li class="menu-item" data-section="export-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-shipping-fast w-5 text-center mr-3 text-secondary"></i>
+                            <span>Exportación</span>
+                        </a>
+                    </li>
+                    <li class="menu-item" data-section="regulations-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-gavel w-5 text-center mr-3 text-secondary"></i>
+                            <span>Normativas</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xs uppercase tracking-wider text-white/60 mb-3 font-semibold">Gestión</h3>
+                <ul class="space-y-2">
+                    <li class="menu-item" data-section="users-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-users w-5 text-center mr-3 text-secondary"></i>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                    <li class="menu-item" data-section="subscriptions-section">
+                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300">
+                            <i class="fas fa-crown w-5 text-center mr-3 text-secondary"></i>
+                            <span>Suscripciones</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="mt-auto pt-6 border-t border-white/10">
+                <a href="/logout" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition-all duration-300 text-white/80 hover:text-white">
+                    <i class="fas fa-sign-out-alt w-5 text-center mr-3 text-white/60"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content mejorado con transición suave -->
+    <main class="ml-0 md:ml-64 p-6 pt-[calc(57px+1.5rem)] h-screen overflow-y-auto bg-gray-50 transition-all duration-300">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="content-section active">
+            <div class="mb-6">
+                <h1 class="text-3xl font-bold text-primary mb-2">Panel de Administración</h1>
+                <p class="text-gray-600">Estadísticas y métricas del sistema LogiFlow</p>
+            </div>
+            
+            <!-- Mensaje de bienvenida personalizado -->
+            <div class="mb-8 animate-fade-in-down">
+                <div class="bg-gradient-to-r from-secondary to-blue-500 text-white rounded-xl p-6 shadow-hover flex items-center">
+                    <div class="w-16 h-16 rounded-lg bg-white/20 flex items-center justify-center mr-5 text-3xl">
+                        <i class="fas fa-user-circle animate-pulse-slow"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold mb-1">¡Bienvenido(a), <span id="welcome-name">Administrador</span>!</h2>
+                        <p class="opacity-90 mb-1">Correo: <span id="welcome-email">correo@ejemplo.com</span></p>
+                        <p class="opacity-80 text-sm">Accede a todas las herramientas de administración desde este panel.</p>
+                        <div class="mt-3">
+                            <a href="#" class="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg inline-flex items-center transition-all duration-300">
+                                <i class="fas fa-cog mr-1"></i> Configurar perfil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-8">
+                <!-- Resumen de estadísticas en tarjetas superiores -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl p-5 shadow-soft hover:shadow-hover transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-14 h-14 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary text-xl mr-4">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-800">0</h3>
+                                <p class="text-gray-500">Usuarios Totales</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-500">Progreso</span>
+                                <span class="text-secondary font-medium">100%</span>
+                            </div>
+                            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-5 shadow-soft hover:shadow-hover transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-14 h-14 rounded-lg bg-success/10 flex items-center justify-center text-success text-xl mr-4">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-800">0</h3>
+                                <p class="text-gray-500">Usuarios Activos</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-500">Progreso</span>
+                                <span class="text-success font-medium">0%</span>
+                            </div>
+                            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-success rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-5 shadow-soft hover:shadow-hover transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-14 h-14 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-xl mr-4">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-800">0</h3>
+                                <p class="text-gray-500">Documentos Totales</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-gray-500">Progreso</span>
+                                <span class="text-primary font-medium">100%</span>
+                            </div>
+                            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Estadísticas detalladas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Actividad de Usuarios</h2>
+                            <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-sm font-medium">
+                                <i class="fas fa-chart-line mr-1"></i> Estadísticas
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                    </div>
+                                    <span class="text-gray-700">Inicios de sesión</span>
+                                </div>
+                                <span class="text-xl font-bold text-gray-800">0</span>
+                            </div>
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                        <i class="fas fa-download"></i>
+                                    </div>
+                                    <span class="text-gray-700">Descargas</span>
+                                </div>
+                                <span class="text-xl font-bold text-gray-800">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-500 mr-3">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <span class="text-gray-700">Vistas de página</span>
+                                </div>
+                                <span class="text-xl font-bold text-gray-800">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-semibold text-primary">Documentos por Categoría</h2>
+                            <div class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-medium">
+                                <i class="fas fa-folder mr-1"></i> Categorías
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center text-yellow-500 mr-3">
+                                        <i class="fas fa-balance-scale"></i>
+                                    </div>
+                                    <span class="text-gray-700">Importación</span>
+                                </div>
+                                <span class="text-xl font-bold text-gray-800">0</span>
+                            </div>
+                            <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-500 mr-3">
+                                        <i class="fas fa-shipping-fast"></i>
+                                    </div>
+                                    <span class="text-gray-700">Exportación</span>
+                                </div>
+                                <span class="text-xl font-bold text-gray-800">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-500 mr-3">
+                                        <i class="fas fa-gavel"></i>
+                                    </div>
+                                    <span class="text-gray-700">Normativas</span>
+                                </div>
+                                <span class="text-xl font-bold text-gray-800">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+                  <!-- Actividad reciente y acciones rápidas -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Actividad reciente -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Actividad Reciente</h2>
+                              <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-clock mr-1"></i> Últimas 24h
+                              </div>
+                          </div>
+                          <div class="space-y-4">
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                          <i class="fas fa-file-powerpoint"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Presentación Aduanas</h4>
+                                          <p class="text-gray-600 text-xs">Procedimientos • Hace 3 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">3.2 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                          <i class="fas fa-file-excel"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Tarifas Arancelarias</h4>
+                                          <p class="text-gray-600 text-xs">Importación • Hace 5 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">1.8 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="mt-4 text-center">
+                              <a href="#" class="text-secondary hover:text-secondary/80 text-sm font-medium inline-flex items-center">
+                                  Ver toda la actividad <i class="fas fa-arrow-right ml-1"></i>
+                              </a>
+                          </div>
+                      </div>
+                      
+                      <!-- Acciones rápidas -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Acciones Rápidas</h2>
+                              <div class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-bolt mr-1"></i> Acciones
+                              </div>
+                          </div>
+                          <div class="grid grid-cols-2 gap-4">
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-secondary hover:text-white hover:border-secondary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-secondary/10 group-hover:bg-white/20 flex items-center justify-center text-secondary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-upload"></i>
+                                  </div>
+                                  <span class="font-medium">Subir Documento</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-primary hover:text-white hover:border-primary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-primary/10 group-hover:bg-white/20 flex items-center justify-center text-primary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-user-plus"></i>
+                                  </div>
+                                  <span class="font-medium">Añadir Usuario</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-success hover:text-white hover:border-success group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-success/10 group-hover:bg-white/20 flex items-center justify-center text-success group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-tags"></i>
+                                  </div>
+                                  <span class="font-medium">Nueva Categoría</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-accent hover:text-white hover:border-accent group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-accent/10 group-hover:bg-white/20 flex items-center justify-center text-accent group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-chart-bar"></i>
+                                  </div>
+                                  <span class="font-medium">Ver Informes</span>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+            </div>
+        </section>
+
+        <!-- Upload Section -->
+        <section id="upload-section" class="content-section hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Cargar Material Didáctico</h1>
+                <p class="text-gray-600">Gestiona el contenido educativo sobre leyes y normativas de importación/exportación</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center" id="uploadArea">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center text-primary text-3xl">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Arrastra archivos aquí o haz clic para seleccionar</h3>
+                    <p class="text-gray-500 mb-4">Formatos soportados: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX</p>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" class="hidden">
+                    <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg">
+                        Seleccionar Archivos
+                    </button>
+                </div>
+            </div>
+
+            <!-- File Information Form -->
+            <div class="mt-6 bg-white rounded-xl p-6 shadow-md hidden" id="fileInfoSection">
+                <div>
+                    <h2 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Información del Material</h2>
+                    <form id="materialForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="title" class="block text-sm font-medium text-gray-700">Título del Material</label>
+                                <input type="text" id="title" name="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none">
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="category" class="block text-sm font-medium text-gray-700">Categoría</label>
+                                <select id="category" name="category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none">
+                                    <option value="">Seleccionar categoría</option>
+                                    <option value="importacion">Leyes de Importación</option>
+                                    <option value="exportacion">Leyes de Exportación</option>
+                                    <option value="normativas">Normativas Generales</option>
+                                    <option value="procedimientos">Procedimientos</option>
+                                    <option value="formularios">Formularios</option>
+                                    <option value="casos-estudio">Casos de Estudio</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="subcategory" class="block text-sm font-medium text-gray-700">Subcategoría</label>
+                                <input type="text" id="subcategory" name="subcategory" placeholder="Ej: Aranceles, INCOTERMS, etc." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="difficulty" class="block text-sm font-medium text-gray-700">Nivel de Dificultad</label>
+                                <select id="difficulty" name="difficulty" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none">
+                                    <option value="basico">Básico</option>
+                                    <option value="intermedio">Intermedio</option>
+                                    <option value="avanzado">Avanzado</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2 md:col-span-2">
+                                <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+                                <textarea id="description" name="description" rows="4" placeholder="Describe el contenido del material..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none"></textarea>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="tags" class="block text-sm font-medium text-gray-700">Etiquetas</label>
+                                <input type="text" id="tags" name="tags" placeholder="Separadas por comas" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="access" class="block text-sm font-medium text-gray-700">Nivel de Acceso</label>
+                                <select id="access" name="access" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none">
+                                    <option value="free">Gratuito</option>
+                                    <option value="premium">Solo Suscriptores</option>
+                                    <option value="admin">Solo Administradores</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex justify-end space-x-4">
+                            <button type="button" id="cancelBtn" class="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg">
+                                Publicar Material
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                  
+                  <!-- Actividad reciente y acciones rápidas -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Actividad reciente -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Actividad Reciente</h2>
+                              <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-clock mr-1"></i> Últimas 24h
+                              </div>
+                          </div>
+                          <div class="space-y-4">
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                          <i class="fas fa-file-powerpoint"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Presentación Aduanas</h4>
+                                          <p class="text-gray-600 text-xs">Procedimientos • Hace 3 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">3.2 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                          <i class="fas fa-file-excel"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Tarifas Arancelarias</h4>
+                                          <p class="text-gray-600 text-xs">Importación • Hace 5 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">1.8 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="mt-4 text-center">
+                              <a href="#" class="text-secondary hover:text-secondary/80 text-sm font-medium inline-flex items-center">
+                                  Ver toda la actividad <i class="fas fa-arrow-right ml-1"></i>
+                              </a>
+                          </div>
+                      </div>
+                      
+                      <!-- Acciones rápidas -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Acciones Rápidas</h2>
+                              <div class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-bolt mr-1"></i> Acciones
+                              </div>
+                          </div>
+                          <div class="grid grid-cols-2 gap-4">
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-secondary hover:text-white hover:border-secondary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-secondary/10 group-hover:bg-white/20 flex items-center justify-center text-secondary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-upload"></i>
+                                  </div>
+                                  <span class="font-medium">Subir Documento</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-primary hover:text-white hover:border-primary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-primary/10 group-hover:bg-white/20 flex items-center justify-center text-primary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-user-plus"></i>
+                                  </div>
+                                  <span class="font-medium">Añadir Usuario</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-success hover:text-white hover:border-success group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-success/10 group-hover:bg-white/20 flex items-center justify-center text-success group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-tags"></i>
+                                  </div>
+                                  <span class="font-medium">Nueva Categoría</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-accent hover:text-white hover:border-accent group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-accent/10 group-hover:bg-white/20 flex items-center justify-center text-accent group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-chart-bar"></i>
+                                  </div>
+                                  <span class="font-medium">Ver Informes</span>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users-section" class="content-section hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Gestión de Usuarios</h1>
+                <p class="text-gray-600">Administra los usuarios registrados en el sistema</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold">Usuarios Registrados</h2>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center" onclick="loadUsersList()">
+                        <i class="fas fa-sync mr-2"></i> Actualizar Lista
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- La lista de usuarios se cargará dinámicamente desde admin-stats.js -->
+                    <div class="border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between hover:shadow-md transition-all duration-300">
+                        <div class="flex items-center mb-3 md:mb-0">
+                            <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 mr-4">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Usuario de Ejemplo</h4>
+                                <p class="text-gray-600 text-sm">usuario@ejemplo.com</p>
+                                <span class="inline-block px-2 py-1 text-xs rounded-full bg-primary/10 text-primary mt-1">admin</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row items-start md:items-center gap-3">
+                            <div class="text-sm text-gray-600">
+                                <p><i class="fas fa-calendar mr-1"></i> Registro: 01/01/2023</p>
+                                <p><i class="fas fa-sign-in-alt mr-1"></i> Último ingreso: 01/06/2023</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="p-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                    <i class="fas fa-user-slash"></i>
+                                </button>
+                                <button class="p-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+                  <!-- Actividad reciente y acciones rápidas -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Actividad reciente -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Actividad Reciente</h2>
+                              <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-clock mr-1"></i> Últimas 24h
+                              </div>
+                          </div>
+                          <div class="space-y-4">
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                          <i class="fas fa-file-powerpoint"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Presentación Aduanas</h4>
+                                          <p class="text-gray-600 text-xs">Procedimientos • Hace 3 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">3.2 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                          <i class="fas fa-file-excel"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Tarifas Arancelarias</h4>
+                                          <p class="text-gray-600 text-xs">Importación • Hace 5 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">1.8 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="mt-4 text-center">
+                              <a href="#" class="text-secondary hover:text-secondary/80 text-sm font-medium inline-flex items-center">
+                                  Ver toda la actividad <i class="fas fa-arrow-right ml-1"></i>
+                              </a>
+                          </div>
+                      </div>
+                      
+                      <!-- Acciones rápidas -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Acciones Rápidas</h2>
+                              <div class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-bolt mr-1"></i> Acciones
+                              </div>
+                          </div>
+                          <div class="grid grid-cols-2 gap-4">
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-secondary hover:text-white hover:border-secondary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-secondary/10 group-hover:bg-white/20 flex items-center justify-center text-secondary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-upload"></i>
+                                  </div>
+                                  <span class="font-medium">Subir Documento</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-primary hover:text-white hover:border-primary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-primary/10 group-hover:bg-white/20 flex items-center justify-center text-primary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-user-plus"></i>
+                                  </div>
+                                  <span class="font-medium">Añadir Usuario</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-success hover:text-white hover:border-success group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-success/10 group-hover:bg-white/20 flex items-center justify-center text-success group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-tags"></i>
+                                  </div>
+                                  <span class="font-medium">Nueva Categoría</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-accent hover:text-white hover:border-accent group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-accent/10 group-hover:bg-white/20 flex items-center justify-center text-accent group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-chart-bar"></i>
+                                  </div>
+                                  <span class="font-medium">Ver Informes</span>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+            </div>
+        </section>
+
+        <!-- Recent Uploads -->
+        <section id="files-section" class="content-section hidden">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Gestionar Archivos</h1>
+                <p class="text-gray-600">Administra los materiales didácticos cargados en el sistema</p>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Materiales Recientes</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-red-500 mr-3">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Ley de Importaciones 2024</h4>
+                                <p class="text-gray-600 text-xs">Normativas • Hace 2 horas</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">2.4 MB</span>
+                            <div class="flex space-x-2">
+                                <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Formularios INCOTERMS</h4>
+                                <p class="text-gray-600 text-xs">Formularios • Hace 1 día</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">1.8 MB</span>
+                            <div class="flex space-x-2">
+                                <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                <i class="fas fa-file-powerpoint"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Presentación Aduanas</h4>
+                                <p class="text-gray-600 text-xs">Procedimientos • Hace 3 días</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">3.2 MB</span>
+                            <div class="flex space-x-2">
+                                <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  
+                  <!-- Actividad reciente y acciones rápidas -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <!-- Actividad reciente -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Actividad Reciente</h2>
+                              <div class="bg-secondary/10 text-secondary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-clock mr-1"></i> Últimas 24h
+                              </div>
+                          </div>
+                          <div class="space-y-4">
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                                          <i class="fas fa-file-powerpoint"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Presentación Aduanas</h4>
+                                          <p class="text-gray-600 text-xs">Procedimientos • Hace 3 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">3.2 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                              
+                              <div class="p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors duration-300">
+                                  <div class="flex items-center mb-3">
+                                      <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                                          <i class="fas fa-file-excel"></i>
+                                      </div>
+                                      <div>
+                                          <h4 class="font-semibold">Tarifas Arancelarias</h4>
+                                          <p class="text-gray-600 text-xs">Importación • Hace 5 días</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex justify-between items-center">
+                                      <span class="text-xs text-gray-500">1.8 MB</span>
+                                      <div class="flex space-x-2">
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-primary transition-colors duration-300">
+                                              <i class="fas fa-edit"></i>
+                                          </button>
+                                          <button class="p-1.5 rounded-full hover:bg-gray-100 text-gray-600 hover:text-danger transition-colors duration-300">
+                                              <i class="fas fa-trash"></i>
+                                          </button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="mt-4 text-center">
+                              <a href="#" class="text-secondary hover:text-secondary/80 text-sm font-medium inline-flex items-center">
+                                  Ver toda la actividad <i class="fas fa-arrow-right ml-1"></i>
+                              </a>
+                          </div>
+                      </div>
+                      
+                      <!-- Acciones rápidas -->
+                      <div class="bg-white rounded-xl p-6 shadow-soft hover:shadow-hover transition-all duration-300 border border-gray-100">
+                          <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-primary">Acciones Rápidas</h2>
+                              <div class="bg-primary/10 text-primary px-3 py-1 rounded-lg text-sm font-medium">
+                                  <i class="fas fa-bolt mr-1"></i> Acciones
+                              </div>
+                          </div>
+                          <div class="grid grid-cols-2 gap-4">
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-secondary hover:text-white hover:border-secondary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-secondary/10 group-hover:bg-white/20 flex items-center justify-center text-secondary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-upload"></i>
+                                  </div>
+                                  <span class="font-medium">Subir Documento</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-primary hover:text-white hover:border-primary group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-primary/10 group-hover:bg-white/20 flex items-center justify-center text-primary group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-user-plus"></i>
+                                  </div>
+                                  <span class="font-medium">Añadir Usuario</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-success hover:text-white hover:border-success group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-success/10 group-hover:bg-white/20 flex items-center justify-center text-success group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-tags"></i>
+                                  </div>
+                                  <span class="font-medium">Nueva Categoría</span>
+                              </a>
+                              <a href="#" class="p-4 border border-gray-100 rounded-lg hover:bg-accent hover:text-white hover:border-accent group transition-all duration-300 flex flex-col items-center justify-center text-center">
+                                  <div class="w-12 h-12 rounded-lg bg-accent/10 group-hover:bg-white/20 flex items-center justify-center text-accent group-hover:text-white text-xl mb-3 transition-all duration-300">
+                                      <i class="fas fa-chart-bar"></i>
+                                  </div>
+                                  <span class="font-medium">Ver Informes</span>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+            </div>
+        </section>
