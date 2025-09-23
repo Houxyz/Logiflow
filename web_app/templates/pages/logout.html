@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerrando Sesión - LogiXport</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind con colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
+                        accent: '#e74c3c',
+                        success: '#27ae60',
+                        warning: '#f39c12'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'gradient': 'gradientAnimation 10s ease infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        gradientAnimation: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Script de autenticación -->
+    <script src="/templates/style/auth.js"></script>
+    <script>
+        // Ejecutar la función de logout cuando la página cargue
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar la animación de cierre de sesión
+            document.getElementById('logout-container').classList.remove('hidden');
+            
+            // Ejecutar la función de logout después de un breve retraso
+            setTimeout(function() {
+                logout(); // Esta función está definida en auth.js
+            }, 2000); // 2 segundos de retraso para mostrar la animación
+        });
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-600 to-indigo-800 min-h-screen flex items-center justify-center p-4 animate-gradient">
+    <div id="logout-container" class="hidden animate-fade-in-up bg-white/10 backdrop-blur-sm p-8 rounded-2xl shadow-2xl text-center max-w-md w-full border border-white/20">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
+            <i class="fas fa-sign-out-alt text-white text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-white mb-4">Cerrando Sesión</h1>
+        <p class="text-white/90 mb-6">Gracias por usar LogiXport. Estamos cerrando tu sesión de forma segura...</p>
+        
+        <!-- Barra de progreso animada -->
+        <div class="w-full h-1.5 bg-white/20 rounded-full overflow-hidden mb-8">
+            <div class="h-full bg-white rounded-full animate-pulse" style="width: 100%; animation: progress 2s linear;"></div>
+        </div>
+        
+        <p class="text-white/80 text-sm">Serás redirigido automáticamente a la página de inicio de sesión.</p>
+        
+        <!-- Enlace manual por si la redirección automática falla -->
+        <div class="mt-6">
+            <a href="/login" class="text-white/70 hover:text-white text-sm underline transition-colors duration-300">Haz clic aquí si no eres redirigido automáticamente</a>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</body>
+</html>

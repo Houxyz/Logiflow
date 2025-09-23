@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - LogiXport</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind con colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
+                        accent: '#e74c3c',
+                        success: '#27ae60',
+                        warning: '#f39c12'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-in-right': 'fadeInRight 0.5s ease-out',
+                        'gradient': 'gradientAnimation 10s ease infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        gradientAnimation: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Cargar script de autenticación al inicio para verificar sesión antes de mostrar contenido -->
+    <script src="/templates/style/auth.js"></script>
+    <script>
+        // Verificar autenticación después de que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const isLoggedIn = await isAuthenticated();
+                if (isLoggedIn) {
+                    const user = await getCurrentUser();
+                    if (user && user.rol === 'admin') {
+                        window.location.replace('/admin');
+                    } else {
+                        window.location.replace('/dashboard');
+                    }
+                } else {
+                    // Mostrar la página de registro solo si no hay sesión iniciada
+                    document.body.classList.remove('opacity-0');
+                }
+            } catch (error) {
+                console.error('Error al verificar autenticación:', error);
+                // Continuar mostrando la página de registro en caso de error
+                document.body.classList.remove('opacity-0');
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen opacity-0 transition-opacity duration-300">
+    <!-- Pantalla de verificación de autenticación -->
+    <div id="auth-check" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 flex justify-center items-center z-50 animate-gradient">
+        <div class="text-center text-white animate-fade-in-up bg-white/10 p-8 rounded-2xl backdrop-blur-sm shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin text-4xl"></i>
+            </div>
+            <p class="text-xl font-medium">Verificando autenticación...</p>
+            <div class="mt-4 w-32 h-1 mx-auto bg-white/30 rounded-full overflow-hidden">
+                <div class="h-full w-1/2 bg-white rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header simplificado -->
+    <header class="bg-white shadow-md sticky top-0 z-40 border-b border-gray-100">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LogiXport</a>
+            <div class="flex items-center space-x-4">
+                <a href="/login" class="bg-white hover:bg-gray-50 text-primary border border-primary px-5 py-2 rounded-full shadow-sm hover:shadow transition-all duration-300 flex items-center space-x-2">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar Sesión</span>
+                </a>
+                <a href="/" class="bg-gray-100 hover:bg-gray-200 text-primary px-5 py-2 rounded-full shadow-sm hover:shadow transition-all duration-300 flex items-center space-x-2">
+                    <i class="fas fa-home"></i>
+                    <span>Volver al Inicio</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenedor principal de registro -->
+    <div class="container mx-auto px-4 py-8 flex justify-center items-center">
+        <div class="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in-up">
+            <!-- Header del registro con gradiente -->
+            <div class="bg-gradient-to-br from-primary to-secondary text-white p-8 relative overflow-hidden">
+                <!-- Elementos decorativos de fondo -->
+                <div class="absolute inset-0 overflow-hidden opacity-20">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></div>
+                    <div class="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-white/10"></div>
+                    <div class="absolute right-1/4 top-1/3 w-20 h-20 rounded-full bg-white/10"></div>
+                </div>
+                
+                <div class="relative z-10 text-center">
+                    <h1 class="text-3xl md:text-4xl font-bold mb-2">Únete a LogiXport</h1>
+                    <p class="text-lg opacity-90 mb-8">Optimiza tu gestión logística con nuestros planes profesionales</p>
+                    
+                    <!-- Pasos de registro mejorados -->
+                    <div class="flex justify-center items-center space-x-4 md:space-x-8 mt-6">
+                        <div class="step-item flex flex-col items-center" data-step="1">
+                            <div class="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center font-bold text-lg mb-2 shadow-md">
+                                1
+                            </div>
+                            <span class="text-sm md:text-base font-medium">Información</span>
+                            <div class="w-full h-1 bg-white mt-2 rounded-full"></div>
+                        </div>
+                        <div class="w-12 md:w-20 h-0.5 bg-white/50"></div>
+                        <div class="step-item flex flex-col items-center" data-step="2">
+                            <div class="w-10 h-10 rounded-full bg-white/30 text-white flex items-center justify-center font-bold text-lg mb-2">
+                                2
+                            </div>
+                            <span class="text-sm md:text-base font-medium opacity-80">Plan</span>
+                            <div class="w-full h-1 bg-white/30 mt-2 rounded-full"></div>
+                        </div>
+                        <div class="w-12 md:w-20 h-0.5 bg-white/50"></div>
+                        <div class="step-item flex flex-col items-center" data-step="3">
+                            <div class="w-10 h-10 rounded-full bg-white/30 text-white flex items-center justify-center font-bold text-lg mb-2">
+                                3
+                            </div>
+                            <span class="text-sm md:text-base font-medium opacity-80">Confirmación</span>
+                            <div class="w-full h-1 bg-white/30 mt-2 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario multi-paso -->
+            <div class="p-8">
+                <!-- Paso 1: Información Personal y Empresa -->
+                <div class="form-step active" id="step1">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-primary mb-2">Información de la Empresa</h2>
+                        <p class="text-gray-600">Cuéntanos sobre tu empresa para personalizar tu experiencia</p>
+                    </div>
+                    
+                    <form class="space-y-6" id="registerForm">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="companyName" class="block text-sm font-medium text-gray-700">Nombre de la Empresa *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-building text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        id="companyName" 
+                                        name="companyName" 
+                                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                        placeholder="Ej: Transportes ABC S.A."
+                                        required
+                                    >
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="companyNameError"></div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="industry" class="block text-sm font-medium text-gray-700">Industria *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-industry text-gray-400"></i>
+                                    </div>
+                                    <select 
+                                        id="industry" 
+                                        name="industry" 
+                                        class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none appearance-none" 
+                                        required
+                                    >
+                                        <option value="">Selecciona tu industria</option>
+                                        <option value="transporte">Transporte y Logística</option>
+                                        <option value="retail">Retail y E-commerce</option>
+                                        <option value="manufactura">Manufactura</option>
+                                        <option value="alimentos">Alimentos y Bebidas</option>
+                                        <option value="farmaceutica">Farmacéutica</option>
+                                        <option value="automotriz">Automotriz</option>
+                                        <option value="construccion">Construcción</option>
+                                        <option value="otros">Otros</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="industryError"></div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="companySize" class="block text-sm font-medium text-gray-700">Tamaño de la Empresa *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-users text-gray-400"></i>
+                                    </div>
+                                    <select 
+                                        id="companySize" 
+                                        name="companySize" 
+                                        class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none appearance-none" 
+                                        required
+                                    >
+                                        <option value="">Selecciona el tamaño</option>
+                                        <option value="1-10">1-10 empleados</option>
+                                        <option value="11-50">11-50 empleados</option>
+                                        <option value="51-200">51-200 empleados</option>
+                                        <option value="201-500">201-500 empleados</option>
+                                        <option value="500+">Más de 500 empleados</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="companySizeError"></div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="fleetSize" class="block text-sm font-medium text-gray-700">Tamaño de Flota</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-truck text-gray-400"></i>
+                                    </div>
+                                    <select 
+                                        id="fleetSize" 
+                                        name="fleetSize" 
+                                        class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none appearance-none"
+                                    >
+                                        <option value="">Selecciona el tamaño</option>
+                                        <option value="1-5">1-5 vehículos</option>
+                                        <option value="6-20">6-20 vehículos</option>
+                                        <option value="21-50">21-50 vehículos</option>
+                                        <option value="51-100">51-100 vehículos</option>
+                                        <option value="100+">Más de 100 vehículos</option>
+                                        <option value="no-fleet">No tengo flota propia</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-chevron-down text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="firstName" class="block text-sm font-medium text-gray-700">Nombre del Contacto *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        id="firstName" 
+                                        name="firstName" 
+                                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                        placeholder="Tu nombre"
+                                        required
+                                    >
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="firstNameError"></div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="lastName" class="block text-sm font-medium text-gray-700">Apellido *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-user text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        id="lastName" 
+                                        name="lastName" 
+                                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                        placeholder="Tu apellido"
+                                        required
+                                    >
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="lastNameError"></div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico Corporativo *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-envelope text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        name="email" 
+                                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                        placeholder="contacto@tuempresa.com"
+                                        required
+                                    >
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="emailError"></div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono *</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-phone text-gray-400"></i>
+                                    </div>
+                                    <input 
+                                        type="tel" 
+                                        id="phone" 
+                                        name="phone" 
+                                        class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                        placeholder="+1 (555) 123-4567"
+                                        required
+                                    >
+                                </div>
+                                <div class="text-accent text-sm min-h-5" id="phoneError"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="position" class="block text-sm font-medium text-gray-700">Cargo/Posición *</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-briefcase text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="position" 
+                                    name="position" 
+                                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                    placeholder="Ej: Gerente de Logística, CEO, Director de Operaciones"
+                                    required
+                                >
+                            </div>
+                            <div class="text-accent text-sm min-h-5" id="positionError"></div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label for="currentChallenges" class="block text-sm font-medium text-gray-700">Principales Desafíos Logísticos (Opcional)</label>
+                            <div class="relative">
+                                <div class="absolute top-3 left-3 flex items-start pointer-events-none">
+                                    <i class="fas fa-comment-dots text-gray-400"></i>
+                                </div>
+                                <textarea 
+                                    id="currentChallenges" 
+                                    name="currentChallenges" 
+                                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none resize-none" 
+                                    placeholder="Describe brevemente los principales retos que enfrenta tu empresa en logística..."
+                                    rows="3"
+                                ></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end pt-6">
+                            <button type="button" class="w-full md:w-auto bg-gradient-to-r from-primary to-secondary text-white py-3 px-8 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center justify-center space-x-2" onclick="nextStep()">
+                                <span>Continuar</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Paso 2: Selección de Plan (oculto inicialmente) -->
+                <div class="form-step hidden" id="step2">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-primary mb-2">Selecciona tu Plan</h2>
+                        <p class="text-gray-600">Elige el plan que mejor se adapte a las necesidades de tu empresa</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- Plan Básico -->
+                        <div class="plan-card border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 bg-white">
+                            <div class="p-6 border-b border-gray-100">
+                                <h3 class="text-xl font-bold text-primary mb-2">Plan Básico</h3>
+                                <div class="flex items-end mb-4">
+                                    <span class="text-3xl font-bold">$99</span>
+                                    <span class="text-gray-500 ml-1">/mes</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Ideal para pequeñas empresas que inician en la gestión logística</p>
+                            </div>
+                            <div class="p-6">
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Hasta 5 usuarios</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Gestión básica de envíos</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Reportes mensuales</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Soporte por email</span>
+                                    </li>
+                                    <li class="flex items-start text-gray-400">
+                                        <i class="fas fa-times-circle mt-1 mr-2"></i>
+                                        <span>Integraciones avanzadas</span>
+                                    </li>
+                                </ul>
+                                <button type="button" class="w-full mt-6 bg-white border border-primary text-primary py-2 px-4 rounded-xl font-medium hover:bg-primary hover:text-white transition-all duration-300" onclick="selectPlan('basic', 99)">
+                                    Seleccionar Plan
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Plan Profesional -->
+                        <div class="plan-card border-2 border-secondary rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white relative">
+                            <div class="absolute top-0 right-0 bg-secondary text-white text-xs font-bold py-1 px-3 rounded-bl-lg">
+                                RECOMENDADO
+                            </div>
+                            <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-secondary/5 to-secondary/10">
+                                <h3 class="text-xl font-bold text-primary mb-2">Plan Profesional</h3>
+                                <div class="flex items-end mb-4">
+                                    <span class="text-3xl font-bold">$199</span>
+                                    <span class="text-gray-500 ml-1">/mes</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Perfecto para empresas en crecimiento con necesidades logísticas complejas</p>
+                            </div>
+                            <div class="p-6">
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Hasta 15 usuarios</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Gestión avanzada de envíos</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Reportes semanales</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Soporte prioritario</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Integraciones básicas</span>
+                                    </li>
+                                </ul>
+                                <button type="button" class="w-full mt-6 bg-gradient-to-r from-primary to-secondary text-white py-2 px-4 rounded-xl font-medium hover:shadow-lg transition-all duration-300" onclick="selectPlan('professional', 199)">
+                                    Seleccionar Plan
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Plan Enterprise -->
+                        <div class="plan-card border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 bg-white">
+                            <div class="p-6 border-b border-gray-100">
+                                <h3 class="text-xl font-bold text-primary mb-2">Plan Enterprise</h3>
+                                <div class="flex items-end mb-4">
+                                    <span class="text-3xl font-bold">$399</span>
+                                    <span class="text-gray-500 ml-1">/mes</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Solución completa para grandes empresas con operaciones logísticas extensas</p>
+                            </div>
+                            <div class="p-6">
+                                <ul class="space-y-3">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Usuarios ilimitados</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Gestión completa de logística</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Reportes en tiempo real</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Soporte 24/7 dedicado</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-success mt-1 mr-2"></i>
+                                        <span class="text-gray-700">Integraciones avanzadas</span>
+                                    </li>
+                                </ul>
+                                <button type="button" class="w-full mt-6 bg-white border border-primary text-primary py-2 px-4 rounded-xl font-medium hover:bg-primary hover:text-white transition-all duration-300" onclick="selectPlan('enterprise', 399)">
+                                    Seleccionar Plan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between pt-6">
+                        <button type="button" class="bg-white border border-gray-300 text-gray-700 py-3 px-8 rounded-xl font-medium shadow-sm hover:shadow transition-all duration-300 flex items-center justify-center space-x-2" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Volver</span>
+                        </button>
+                        <button type="button" id="step2NextBtn" class="bg-gray-300 text-white py-3 px-8 rounded-xl font-medium shadow-md transition-all duration-300 flex items-center justify-center space-x-2 cursor-not-allowed" disabled>
+                            <span>Continuar</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Confirmación (oculto inicialmente) -->
+                <div class="form-step hidden" id="step3">
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-primary mb-2">Confirma tu Registro</h2>
+                        <p class="text-gray-600">Revisa la información antes de completar tu registro</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                        <h3 class="text-lg font-semibold text-primary mb-4">Resumen de Información</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-1">Información de la Empresa</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Nombre de la Empresa:</span>
+                                        <p class="font-medium" id="summary-companyName">-</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Industria:</span>
+                                        <p class="font-medium" id="summary-industry">-</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Tamaño de la Empresa:</span>
+                                        <p class="font-medium" id="summary-companySize">-</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Tamaño de Flota:</span>
+                                        <p class="font-medium" id="summary-fleetSize">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-500 mb-1">Información de Contacto</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Nombre Completo:</span>
+                                        <p class="font-medium" id="summary-fullName">-</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Correo Electrónico:</span>
+                                        <p class="font-medium" id="summary-email">-</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Teléfono:</span>
+                                        <p class="font-medium" id="summary-phone">-</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-gray-600 text-sm">Cargo/Posición:</span>
+                                        <p class="font-medium" id="summary-position">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <h4 class="text-sm font-medium text-gray-500 mb-1">Plan Seleccionado</h4>
+                            <div class="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200">
+                                <div>
+                                    <p class="font-medium text-primary" id="summary-planName">-</p>
+                                    <p class="text-sm text-gray-600" id="summary-planDescription">-</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-2xl font-bold text-primary" id="summary-planPrice">-</p>
+                                    <p class="text-xs text-gray-500">/mes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <input type="checkbox" id="termsCheckbox" class="mt-1 mr-3">
+                            <label for="termsCheckbox" class="text-sm text-gray-700">
+                                He leído y acepto los <a href="#" class="text-secondary hover:underline">Términos y Condiciones</a> y la <a href="#" class="text-secondary hover:underline">Política de Privacidad</a> de LogiXport.
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <input type="checkbox" id="marketingCheckbox" class="mt-1 mr-3">
+                            <label for="marketingCheckbox" class="text-sm text-gray-700">
+                                Acepto recibir comunicaciones de marketing y novedades sobre productos y servicios de LogiXport.
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between pt-6">
+                        <button type="button" class="bg-white border border-gray-300 text-gray-700 py-3 px-8 rounded-xl font-medium shadow-sm hover:shadow transition-all duration-300 flex items-center justify-center space-x-2" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Volver</span>
+                        </button>
+                        <button type="button" id="completeRegistrationBtn" class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-8 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary flex items-center justify-center space-x-2" onclick="completeRegistration()">
+                            <span>Completar Registro</span>
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Paso 4: Registro Exitoso (oculto inicialmente) -->
+                <div class="form-step hidden" id="step4">
+                    <div class="text-center py-8 animate-fade-in-up">
+                        <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-success/10 flex items-center justify-center">
+                            <i class="fas fa-check-circle text-success text-5xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-primary mb-4">¡Registro Completado con Éxito!</h2>
+                        <p class="text-gray-600 text-lg mb-8 max-w-lg mx-auto">Gracias por registrarte en LogiXport. Hemos enviado un correo de confirmación a tu dirección de email.</p>
+                        
+                        <div class="bg-gray-50 rounded-xl p-6 mb-8 max-w-md mx-auto">
+                            <h3 class="text-lg font-semibold text-primary mb-4">Próximos Pasos</h3>
+                            <ul class="space-y-4 text-left">
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+                                        <span class="text-secondary font-bold">1</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">Verifica tu correo electrónico</p>
+                                        <p class="text-sm text-gray-600">Confirma tu cuenta a través del enlace que te hemos enviado</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+                                        <span class="text-secondary font-bold">2</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">Completa tu perfil</p>
+                                        <p class="text-sm text-gray-600">Personaliza tu cuenta con información adicional</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+                                        <span class="text-secondary font-bold">3</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-800">Explora la plataforma</p>
+                                        <p class="text-sm text-gray-600">Descubre todas las funcionalidades que tenemos para ti</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                            <a href="/login" class="bg-gradient-to-r from-primary to-secondary text-white py-3 px-8 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <span>Iniciar Sesión</span>
+                            </a>
+                            <a href="/" class="bg-white border border-gray-300 text-gray-700 py-3 px-8 rounded-xl font-medium shadow-sm hover:shadow transition-all duration-300 flex items-center justify-center space-x-2">
+                                <i class="fas fa-home"></i>
+                                <span>Volver al Inicio</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para funcionalidad -->
+    <script>
+        // Ocultar pantalla de verificación después de cargar
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('auth-check').style.display = 'none';
+            }, 500);
+        });
+
+        // Función para validar el formulario del paso 1
+        function validateStep1() {
+            // Obtener valores de los campos
+            const companyName = document.getElementById('companyName').value;
+            const industry = document.getElementById('industry').value;
+            const companySize = document.getElementById('companySize').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const position = document.getElementById('position').value;
+            
+            // Limpiar errores previos
+            clearErrors();
+            
+            let isValid = true;
+            
+            // Validar campos requeridos
+            if (!companyName) {
+                showError('companyNameError', 'El nombre de la empresa es requerido');
+                isValid = false;
+            }
+            
+            if (!industry) {
+                showError('industryError', 'Selecciona una industria');
+                isValid = false;
+            }
+            
+            if (!companySize) {
+                showError('companySizeError', 'Selecciona el tamaño de la empresa');
+                isValid = false;
+            }
+            
+            if (!firstName) {
+                showError('firstNameError', 'El nombre es requerido');
+                isValid = false;
+            }
+            
+            if (!lastName) {
+                showError('lastNameError', 'El apellido es requerido');
+                isValid = false;
+            }
+            
+            if (!email) {
+                showError('emailError', 'El correo electrónico es requerido');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showError('emailError', 'Ingresa un correo electrónico válido');
+                isValid = false;
+            }
+            
+            if (!phone) {
+                showError('phoneError', 'El teléfono es requerido');
+                isValid = false;
+            }
+            
+            if (!position) {
+                showError('positionError', 'El cargo/posición es requerido');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Variables para almacenar la información del plan seleccionado
+        let selectedPlan = null;
+        let selectedPlanPrice = 0;
+        
+        // Función para avanzar al siguiente paso
+        function nextStep() {
+            if (validateStep1()) {
+                // Ocultar paso actual y mostrar paso 2
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                document.getElementById('step2').classList.add('active');
+                
+                // Actualizar indicadores de pasos
+                updateStepIndicators(2);
+                
+                // Hacer scroll al inicio del formulario
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        // Función para volver al paso anterior
+        function prevStep(currentStep) {
+            // Ocultar paso actual
+            document.getElementById('step' + currentStep).classList.remove('active');
+            document.getElementById('step' + currentStep).classList.add('hidden');
+            
+            // Mostrar paso anterior
+            const prevStepNum = currentStep - 1;
+            document.getElementById('step' + prevStepNum).classList.remove('hidden');
+            document.getElementById('step' + prevStepNum).classList.add('active');
+            
+            // Actualizar indicadores de pasos
+            updateStepIndicators(prevStepNum);
+            
+            // Hacer scroll al inicio del formulario
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Función para seleccionar un plan
+        function selectPlan(planType, price) {
+            // Guardar información del plan seleccionado
+            selectedPlan = planType;
+            selectedPlanPrice = price;
+            
+            // Actualizar estilos de los botones de planes
+            const planCards = document.querySelectorAll('.plan-card');
+            planCards.forEach(card => {
+                const button = card.querySelector('button');
+                button.classList.remove('bg-gradient-to-r', 'from-primary', 'to-secondary', 'text-white');
+                button.classList.add('bg-white', 'border', 'border-primary', 'text-primary');
+                button.textContent = 'Seleccionar Plan';
+            });
+            
+            // Actualizar estilo del plan seleccionado
+            const selectedButton = event.currentTarget;
+            selectedButton.classList.remove('bg-white', 'border', 'border-primary', 'text-primary');
+            selectedButton.classList.add('bg-gradient-to-r', 'from-primary', 'to-secondary', 'text-white');
+            selectedButton.textContent = 'Plan Seleccionado';
+            
+            // Habilitar botón de continuar
+            const nextButton = document.getElementById('step2NextBtn');
+            nextButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
+            nextButton.classList.add('bg-gradient-to-r', 'from-primary', 'to-secondary', 'hover:shadow-lg', 'transform', 'hover:-translate-y-0.5');
+            nextButton.disabled = false;
+            
+            // Agregar evento al botón de continuar
+            nextButton.onclick = function() {
+                goToStep3();
+            };
+        }
+        
+        // Función para ir al paso 3 (confirmación)
+        function goToStep3() {
+            // Llenar el resumen con la información del formulario
+            fillSummary();
+            
+            // Ocultar paso 2 y mostrar paso 3
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            document.getElementById('step3').classList.add('active');
+            
+            // Actualizar indicadores de pasos
+            updateStepIndicators(3);
+            
+            // Hacer scroll al inicio del formulario
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Función para llenar el resumen en el paso 3
+        function fillSummary() {
+            // Información de la empresa
+            document.getElementById('summary-companyName').textContent = document.getElementById('companyName').value;
+            
+            // Obtener texto de la opción seleccionada en los selects
+            const industrySelect = document.getElementById('industry');
+            const industrySummary = industrySelect.options[industrySelect.selectedIndex].text;
+            document.getElementById('summary-industry').textContent = industrySummary;
+            
+            const companySizeSelect = document.getElementById('companySize');
+            const companySizeSummary = companySizeSelect.options[companySizeSelect.selectedIndex].text;
+            document.getElementById('summary-companySize').textContent = companySizeSummary;
+            
+            const fleetSizeSelect = document.getElementById('fleetSize');
+            const fleetSizeSummary = fleetSizeSelect.selectedIndex > 0 ? fleetSizeSelect.options[fleetSizeSelect.selectedIndex].text : 'No especificado';
+            document.getElementById('summary-fleetSize').textContent = fleetSizeSummary;
+            
+            // Información de contacto
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            document.getElementById('summary-fullName').textContent = `${firstName} ${lastName}`;
+            document.getElementById('summary-email').textContent = document.getElementById('email').value;
+            document.getElementById('summary-phone').textContent = document.getElementById('phone').value;
+            document.getElementById('summary-position').textContent = document.getElementById('position').value;
+            
+            // Información del plan
+            let planName, planDescription;
+            switch(selectedPlan) {
+                case 'basic':
+                    planName = 'Plan Básico';
+                    planDescription = 'Ideal para pequeñas empresas';
+                    break;
+                case 'professional':
+                    planName = 'Plan Profesional';
+                    planDescription = 'Perfecto para empresas en crecimiento';
+                    break;
+                case 'enterprise':
+                    planName = 'Plan Enterprise';
+                    planDescription = 'Solución completa para grandes empresas';
+                    break;
+                default:
+                    planName = 'No seleccionado';
+                    planDescription = '';
+            }
+            
+            document.getElementById('summary-planName').textContent = planName;
+            document.getElementById('summary-planDescription').textContent = planDescription;
+            document.getElementById('summary-planPrice').textContent = `$${selectedPlanPrice}`;
+        }
+        
+        // Función para actualizar los indicadores de pasos
+        function updateStepIndicators(activeStep) {
+            const stepItems = document.querySelectorAll('.step-item');
+            
+            stepItems.forEach((item, index) => {
+                const stepNum = index + 1;
+                const circle = item.querySelector('div:first-child');
+                const bar = item.querySelector('div:last-child');
+                
+                if (stepNum < activeStep) {
+                    // Paso completado
+                    circle.classList.remove('bg-white/30');
+                    circle.classList.add('bg-success');
+                    circle.innerHTML = '<i class="fas fa-check text-white"></i>';
+                    bar.classList.remove('bg-white/30');
+                    bar.classList.add('bg-success');
+                } else if (stepNum === activeStep) {
+                    // Paso activo
+                    circle.classList.remove('bg-white/30', 'bg-success');
+                    circle.classList.add('bg-white');
+                    circle.innerHTML = stepNum;
+                    bar.classList.remove('bg-white/30');
+                    bar.classList.add('bg-white');
+                } else {
+                    // Paso pendiente
+                    circle.classList.remove('bg-white', 'bg-success');
+                    circle.classList.add('bg-white/30');
+                    circle.innerHTML = stepNum;
+                    bar.classList.remove('bg-white', 'bg-success');
+                    bar.classList.add('bg-white/30');
+                }
+            });
+        }
+        
+        // Función para completar el registro
+        function completeRegistration() {
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            
+            if (!termsCheckbox.checked) {
+                alert('Debes aceptar los términos y condiciones para completar el registro.');
+                return;
+            }
+            
+            // Mostrar indicador de carga
+            const completeBtn = document.getElementById('completeRegistrationBtn');
+            completeBtn.disabled = true;
+            completeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Procesando...</span>';
+            
+            // Simular envío de datos al servidor (aquí iría la lógica real de envío)
+            setTimeout(function() {
+                // Ocultar paso 3 y mostrar paso 4 (pantalla de éxito)
+                document.getElementById('step3').classList.remove('active');
+                document.getElementById('step3').classList.add('hidden');
+                document.getElementById('step4').classList.remove('hidden');
+                document.getElementById('step4').classList.add('active');
+                
+                // Hacer scroll al inicio del formulario
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1500); // Simular un tiempo de procesamiento de 1.5 segundos
+        }
+
+        // Funciones auxiliares
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('.form-error, [id$="Error"]');
+            errorElements.forEach(element => {
+                element.textContent = '';
+            });
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+</body>
+</html>

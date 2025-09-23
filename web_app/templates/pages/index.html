@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiXport - Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind con colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
+                        accent: '#e74c3c',
+                        success: '#27ae60',
+                        warning: '#f39c12'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-in-right': 'fadeInRight 0.5s ease-out',
+                        'gradient': 'gradientAnimation 10s ease infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        gradientAnimation: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Precargar script de autenticación -->
+    <script src="/templates/style/auth.js"></script>
+    <!-- Script para modales y verificación de autenticación -->
+    <script src="/templates/style/modal.js"></script>
+    <!-- Script para menú responsive mejorado -->
+    <script src="/templates/style/responsive-menu.js"></script>
+    <!-- Script para menú móvil y submenús -->
+    <script src="/templates/style/mobile-menu.js"></script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 overflow-x-hidden flex flex-col min-h-screen">
+    <!-- Pantalla de verificación de autenticación mejorada -->
+    <div id="auth-check" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 flex justify-center items-center z-50 animate-gradient">
+        <div class="text-center text-white animate-fade-in-up bg-white/10 p-8 rounded-2xl backdrop-blur-sm shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin text-4xl"></i>
+            </div>
+            <p class="text-xl font-medium">Verificando autenticación...</p>
+            <div class="mt-4 w-32 h-1 mx-auto bg-white/30 rounded-full overflow-hidden">
+                <div class="h-full w-1/2 bg-white rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal (oculto hasta verificar autenticación) -->
+    <div id="main-content" class="hidden flex-1 flex flex-col">
+        <!-- Overlay para menú móvil -->
+        <div id="menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0"></div>
+        
+        <!-- Header mejorado coherente con landing -->
+        <header class="bg-white shadow-lg sticky top-0 z-40 border-b border-gray-100">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="/" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LogiXport</a>
+                
+                <!-- Menú hamburguesa mejorado con animación -->
+                <button class="lg:hidden flex flex-col justify-center items-center w-10 h-10 relative z-50 transition-all duration-300 ease-in-out hover:bg-gray-100 rounded-full" id="hamburger-menu" aria-label="Menú de navegación">
+                    <span class="block w-6 h-0.5 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-300 transform"></span>
+                    <span class="block w-4 h-0.5 bg-gradient-to-r from-primary to-secondary rounded-full ml-0 my-1.5 transition-all duration-300 transform"></span>
+                    <span class="block w-6 h-0.5 bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-300 transform"></span>
+                </button>
+                
+                <!-- Navegación principal mejorada con efectos y menús desplegables -->
+                <div class="hidden lg:flex items-center space-x-4" id="nav-links">
+                    <!-- Grupo: Navegación principal -->
+                    <div class="flex items-center space-x-2 mr-2">
+                        <a href="/dashboard" class="flex items-center space-x-2 text-primary border-b-2 border-primary px-3 py-1 font-medium transition-all duration-300 hover:bg-blue-50 rounded-t-lg">
+                            <i class="fas fa-home"></i> <span>Home</span>
+                        </a>
+                        
+                        <a href="/information" class="flex items-center space-x-2 text-gray-600 hover:text-primary hover:border-b-2 hover:border-primary transition-all duration-300 px-3 py-1 hover:bg-blue-50 rounded-t-lg">
+                            <i class="fas fa-info-circle"></i> <span>Información</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Grupo: Operaciones -->
+                    <div class="flex items-center space-x-2 mr-2">
+                        <!-- Menú desplegable: Gestión de Envíos -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-600 group-hover:text-primary group-hover:border-b-2 group-hover:border-primary transition-all duration-300 px-3 py-1 group-hover:bg-blue-50 rounded-t-lg">
+                                <i class="fas fa-shipping-fast"></i> <span>Gestión de Envíos</span> <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-lg py-2 z-50 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-left invisible group-hover:visible">
+                                <a href="/envios/crear" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-plus-circle mr-2"></i> Crear Envío
+                                </a>
+                                <a href="/envios/listado" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-list mr-2"></i> Listado de Envíos
+                                </a>
+                                <a href="/envios/seguimiento" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-search-location mr-2"></i> Seguimiento
+                                </a>
+                                <a href="/envios/historial" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-history mr-2"></i> Historial
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Menú desplegable: Flotas y Vehículos -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-600 group-hover:text-primary group-hover:border-b-2 group-hover:border-primary transition-all duration-300 px-3 py-1 group-hover:bg-blue-50 rounded-t-lg">
+                                <i class="fas fa-truck"></i> <span>Flotas y Vehículos</span> <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-lg py-2 z-50 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-left invisible group-hover:visible">
+                                <a href="/flotas/listado" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-truck-moving mr-2"></i> Gestión de Flotas
+                                </a>
+                                <a href="/flotas/conductores" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-id-card mr-2"></i> Conductores
+                                </a>
+                                <a href="/flotas/mantenimiento" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-tools mr-2"></i> Mantenimiento
+                                </a>
+                                <a href="/flotas/rutas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-route mr-2"></i> Rutas y Planificación
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grupo: Información y Reportes -->
+                    <div class="flex items-center space-x-2 mr-2">
+                        <!-- Menú desplegable: Documentación -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-600 group-hover:text-primary group-hover:border-b-2 group-hover:border-primary transition-all duration-300 px-3 py-1 group-hover:bg-blue-50 rounded-t-lg">
+                                <i class="fas fa-file-alt"></i> <span>Documentación</span> <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-lg py-2 z-50 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-left invisible group-hover:visible">
+                                <a href="/documentos/normativas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-gavel mr-2"></i> Normativas
+                                </a>
+                                <a href="/documentos/plantillas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-copy mr-2"></i> Plantillas
+                                </a>
+                                <a href="/documentos/guias" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-book mr-2"></i> Guías y Manuales
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Menú desplegable: Reportes -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-600 group-hover:text-primary group-hover:border-b-2 group-hover:border-primary transition-all duration-300 px-3 py-1 group-hover:bg-blue-50 rounded-t-lg">
+                                <i class="fas fa-chart-bar"></i> <span>Reportes</span> <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute left-0 mt-1 w-64 bg-white shadow-lg rounded-lg py-2 z-50 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-left invisible group-hover:visible">
+                                <a href="/reportes/rendimiento" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-tachometer-alt mr-2"></i> Rendimiento
+                                </a>
+                                <a href="/reportes/financieros" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-dollar-sign mr-2"></i> Financieros
+                                </a>
+                                <a href="/reportes/estadisticas" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-chart-pie mr-2"></i> Estadísticas
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Grupo: Configuración -->
+                    <div class="flex items-center space-x-2">
+                        <!-- Menú desplegable: Configuración -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 text-gray-600 group-hover:text-primary group-hover:border-b-2 group-hover:border-primary transition-all duration-300 px-3 py-1 group-hover:bg-blue-50 rounded-t-lg">
+                                <i class="fas fa-cog"></i> <span>Configuración</span> <i class="fas fa-chevron-down text-xs ml-1 transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute right-0 mt-1 w-64 bg-white shadow-lg rounded-lg py-2 z-50 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 origin-top-right invisible group-hover:visible">
+                                <a href="/configuracion/perfil" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-user-cog mr-2"></i> Perfil de Usuario
+                                </a>
+                                <a href="/configuracion/empresa" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-building mr-2"></i> Datos de Empresa
+                                </a>
+                                <a href="/configuracion/preferencias" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-sliders-h mr-2"></i> Preferencias
+                                </a>
+                                {% if user and user.rol == 'admin' %}
+                                <a href="/panel_admin/dashboard-admin" class="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-primary transition-colors duration-200">
+                                    <i class="fas fa-user-shield mr-2"></i> Panel de Administración
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones de usuario mejorados con efectos (visible en desktop) -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    <div class="flex items-center space-x-3 bg-gray-50 px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-300">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                        <span id="user-name" class="text-gray-700 font-medium">{{ user.nombre_usuario if user else 'Usuario' }}</span>
+                    </div>
+                    <button class="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-2" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+                
+                <!-- Menú móvil con animación de deslizamiento y mejor organización -->
+                <div id="mobile-menu" class="fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden rounded-l-3xl flex flex-col">
+                    <!-- Cabecera del menú móvil -->
+                    <div class="p-4 border-b border-gray-100 rounded-tl-3xl flex-shrink-0">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LogiXport</span>
+                            <button id="close-mobile-menu" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-300">
+                                <i class="fas fa-times text-primary"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-2xl shadow-sm mb-4 transition-all duration-300 hover:shadow-md border border-blue-100">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white shadow-md">
+                                <i class="fas fa-user text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <span id="mobile-user-name" class="block font-medium text-gray-800 text-base">{{ user.nombre_usuario if user else 'Usuario' }}</span>
+                                <span class="text-xs text-gray-500">{{ user.correo if user else 'usuario@logixport.com' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contenido principal del menú con scroll personalizado -->
+                    <div class="p-4 space-y-3 flex-grow overflow-y-auto custom-scrollbar">
+                        <!-- Sección: Navegación principal -->
+                        <div class="mb-6">
+                            <div class="text-xs uppercase text-gray-500 font-medium mb-2 px-2">Navegación principal</div>
+                            <a href="/dashboard" class="flex items-center space-x-3 p-3 rounded-xl text-primary bg-blue-50 font-medium shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-home text-primary"></i>
+                                </div>
+                                <span>Home</span>
+                            </a>
+                        </div>
+                        
+                        <!-- Sección: Operaciones -->
+                        <div class="mb-6">
+                            <div class="text-xs uppercase text-gray-500 font-medium mb-2 px-2">Operaciones</div>
+                            
+                            <!-- Gestión de Envíos -->
+                            <div class="space-y-2 mb-3">
+                                <button class="w-full flex items-center justify-between space-x-3 p-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5" onclick="toggleMobileSubmenu('envios-submenu')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                            <i class="fas fa-shipping-fast text-blue-600"></i>
+                                        </div>
+                                        <span>Gestión de Envíos</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="envios-icon"></i>
+                                </button>
+                                <div class="hidden ml-11 space-y-1 pl-2 border-l-2 border-blue-100" id="envios-submenu">
+                                    <a href="/envios/crear" class="block p-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary transition-all duration-200">
+                                        <i class="fas fa-plus-circle mr-2"></i> Crear Envío
+                                    </a>
+                                    <a href="/envios/listado" class="block p-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary transition-all duration-200">
+                                        <i class="fas fa-list mr-2"></i> Listado de Envíos
+                                    </a>
+                                    <a href="/envios/seguimiento" class="block p-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary transition-all duration-200">
+                                        <i class="fas fa-search-location mr-2"></i> Seguimiento
+                                    </a>
+                                    <a href="/envios/historial" class="block p-2 rounded-xl text-gray-600 hover:bg-blue-50 hover:text-primary transition-all duration-200">
+                                        <i class="fas fa-history mr-2"></i> Historial
+                                    </a>
+                                </div>
+                            </div>
+                        
+                            <!-- Flotas y Vehículos -->
+                            <div class="space-y-2 mb-3">
+                                <button class="w-full flex items-center justify-between space-x-3 p-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5" onclick="toggleMobileSubmenu('flotas-submenu')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                            <i class="fas fa-truck text-purple-600"></i>
+                                        </div>
+                                        <span>Flotas y Vehículos</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="flotas-icon"></i>
+                                </button>
+                                <div class="hidden ml-11 space-y-1 pl-2 border-l-2 border-purple-100" id="flotas-submenu">
+                                    <a href="/flotas/listado" class="block p-2 rounded-xl text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200">
+                                        <i class="fas fa-truck-moving mr-2"></i> Gestión de Flotas
+                                    </a>
+                                    <a href="/flotas/conductores" class="block p-2 rounded-xl text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200">
+                                        <i class="fas fa-id-card mr-2"></i> Conductores
+                                    </a>
+                                    <a href="/flotas/mantenimiento" class="block p-2 rounded-xl text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200">
+                                        <i class="fas fa-tools mr-2"></i> Mantenimiento
+                                    </a>
+                                    <a href="/flotas/rutas" class="block p-2 rounded-xl text-gray-600 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200">
+                                        <i class="fas fa-route mr-2"></i> Rutas y Planificación
+                                    </a>
+                                </div>
+                            </div>
+                        
+                        <!-- Sección: Documentos y Reportes -->
+                        <div class="mb-6">
+                            <div class="text-xs uppercase text-gray-500 font-medium mb-2 px-2">Documentos y Reportes</div>
+                            
+                            <!-- Documentación -->
+                            <div class="space-y-2 mb-3">
+                                <button class="w-full flex items-center justify-between space-x-3 p-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5" onclick="toggleMobileSubmenu('docs-submenu')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                                            <i class="fas fa-file-alt text-indigo-600"></i>
+                                        </div>
+                                        <span>Documentación</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="docs-icon"></i>
+                                </button>
+                                <div class="hidden ml-11 space-y-1 pl-2 border-l-2 border-indigo-100" id="docs-submenu">
+                                    <a href="/documentos/normativas" class="block p-2 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                                        <i class="fas fa-gavel mr-2"></i> Normativas
+                                    </a>
+                                    <a href="/documentos/plantillas" class="block p-2 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                                        <i class="fas fa-copy mr-2"></i> Plantillas
+                                    </a>
+                                    <a href="/documentos/guias" class="block p-2 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                                        <i class="fas fa-book mr-2"></i> Guías y Manuales
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Reportes -->
+                            <div class="space-y-2 mb-3">
+                                <button class="w-full flex items-center justify-between space-x-3 p-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5" onclick="toggleMobileSubmenu('reportes-submenu')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                            <i class="fas fa-chart-bar text-green-600"></i>
+                                        </div>
+                                        <span>Reportes</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="reportes-icon"></i>
+                                </button>
+                                <div class="hidden ml-11 space-y-1 pl-2 border-l-2 border-green-100" id="reportes-submenu">
+                                    <a href="/reportes/rendimiento" class="block p-2 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all duration-200">
+                                        <i class="fas fa-tachometer-alt mr-2"></i> Rendimiento
+                                    </a>
+                                    <a href="/reportes/financieros" class="block p-2 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all duration-200">
+                                        <i class="fas fa-dollar-sign mr-2"></i> Financieros
+                                    </a>
+                                    <a href="/reportes/estadisticas" class="block p-2 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-700 transition-all duration-200">
+                                        <i class="fas fa-chart-pie mr-2"></i> Estadísticas
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sección: Ayuda y Configuración -->
+                        <div class="mb-6">
+                            <div class="text-xs uppercase text-gray-500 font-medium mb-2 px-2">Ayuda y Configuración</div>
+                            
+                            <a href="/information" class="flex items-center space-x-3 p-3 rounded-xl text-gray-700 hover:bg-amber-50 transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5 mb-3">
+                                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                                    <i class="fas fa-info-circle text-amber-600"></i>
+                                </div>
+                                <span>Información</span>
+                            </a>
+                            
+                            <!-- Configuración -->
+                            <div class="space-y-2">
+                                <button class="w-full flex items-center justify-between space-x-3 p-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:shadow-md transform hover:-translate-y-0.5" onclick="toggleMobileSubmenu('config-submenu')">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-cog text-gray-600"></i>
+                                        </div>
+                                        <span>Configuración</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="config-icon"></i>
+                                </button>
+                                <div class="hidden ml-11 space-y-1 pl-2 border-l-2 border-gray-200" id="config-submenu">
+                                    <a href="/configuracion/perfil" class="block p-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
+                                        <i class="fas fa-user-cog mr-2"></i> Perfil de Usuario
+                                    </a>
+                                    <a href="/configuracion/empresa" class="block p-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
+                                        <i class="fas fa-building mr-2"></i> Datos de Empresa
+                                    </a>
+                                    <a href="/configuracion/preferencias" class="block p-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
+                                        <i class="fas fa-sliders-h mr-2"></i> Preferencias
+                                    </a>
+                                    {% if user and user.rol == 'admin' %}
+                                    <a href="/panel_admin/dashboard-admin" class="block p-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
+                                        <i class="fas fa-user-shield mr-2"></i> Panel de Administración
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón de cerrar sesión con mejor posicionamiento -->
+                    <div class="relative p-4 border-t border-gray-100 bg-white mt-auto">
+                        <button class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg hover:from-red-600 hover:to-red-700" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Botones de usuario mejorados con efectos (visible en desktop) -->
+                <div class="lg:flex items-center space-x-6">
+                    <div class="flex items-center space-x-3 bg-gray-50 px-4 py-2 rounded-full shadow-sm hover:shadow transition-all duration-300">
+                        <span id="user-name" class="text-gray-700 font-medium">{{ user.nombre_usuario if user else 'Usuario' }}</span>
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                    </div>
+                    <button class="bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-2" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Contenido principal mejorado con diseño más moderno -->
+        <main class="container mx-auto px-6 py-10 flex-1 max-w-full">
+            <!-- Título de bienvenida mejorado con animaciones y diseño más atractivo -->
+            <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white rounded-2xl p-0 mb-12 shadow-xl transform transition-all duration-500 hover:shadow-2xl overflow-hidden">
+                <!-- Elementos decorativos de fondo -->
+                <div class="absolute inset-0 overflow-hidden opacity-20">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></div>
+                    <div class="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-white/10"></div>
+                    <div class="absolute right-1/4 top-1/3 w-20 h-20 rounded-full bg-white/10"></div>
+                </div>
+                
+                <!-- Contenido principal -->
+                <div class="relative p-10">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                        <div class="space-y-8 md:w-3/4">
+                            <!-- Título con efecto de gradiente en texto -->
+                            <div class="space-y-3">
+                                <h1 class="text-3xl md:text-5xl font-bold animate-fade-in-up bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-white">Bienvenido a LogiXport, <span id="welcome-username" class="text-white">{{ user.nombre_usuario if user else 'Usuario' }}</span></h1>
+                                <p id="welcome-email" class="text-xl opacity-90 animate-fade-in-up font-light">{{ user.correo if user else 'Sistema integral de gestión logística y normativas' }}</p>
+                            </div>
+                            
+                            {% if user %}
+                            <!-- Tarjetas de información de usuario con mejor diseño -->
+                            <div class="flex flex-wrap gap-4 bg-white/10 p-6 rounded-xl backdrop-blur-sm shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 animate-fade-in-up border border-white/20">
+                                <div class="flex items-center gap-3 bg-white/20 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/30 hover:-translate-y-1 hover:shadow-md">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-user-tag text-accent"></i>
+                                    </div>
+                                    <span>Rol: <strong class="font-semibold">{{ user.rol }}</strong></span>
+                                </div>
+                                <div class="flex items-center gap-3 bg-white/20 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/30 hover:-translate-y-1 hover:shadow-md">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-building text-accent"></i>
+                                    </div>
+                                    <span>Empresa: <strong class="font-semibold">{{ user.empresa if user.empresa else 'No especificada' }}</strong></span>
+                                </div>
+                                {% if user.membresia_activa %}
+                                <div class="flex items-center gap-3 bg-white/20 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/30 hover:-translate-y-1 hover:shadow-md">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-id-card text-accent"></i>
+                                    </div>
+                                    <span>Plan: <strong class="font-semibold">{{ user.plan_membresia }}</strong></span>
+                                </div>
+                                <div class="flex items-center gap-3 bg-white/20 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/30 hover:-translate-y-1 hover:shadow-md">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-calendar-check text-accent"></i>
+                                    </div>
+                                    <span>Expira: <strong class="font-semibold">{{ user.fecha_expiracion_membresia.strftime('%d/%m/%Y') if user.fecha_expiracion_membresia else 'No definido' }}</strong></span>
+                                </div>
+                                {% endif %}
+                                <div class="flex items-center gap-3 bg-white/20 px-4 py-3 rounded-lg transition-all duration-300 hover:bg-white/30 hover:-translate-y-1 hover:shadow-md">
+                                    <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                                        <i class="fas fa-clock text-accent"></i>
+                                    </div>
+                                    <span>Último acceso: <strong class="font-semibold">{{ user.ultimo_ingreso.strftime('%d/%m/%Y %H:%M') if user.ultimo_ingreso else 'Primer ingreso' }}</strong></span>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Estadísticas con mejor diseño y animaciones -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fade-in-up">
+                                <div class="bg-white/15 backdrop-blur-sm rounded-xl p-5 text-center transition-all duration-300 hover:bg-white/25 hover:transform hover:scale-105 hover:shadow-lg border border-white/10 group">
+                                    <div class="w-14 h-14 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-3 group-hover:bg-white/30 transition-all duration-300 transform group-hover:rotate-12">
+                                        <i class="fas fa-database text-2xl"></i>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">1,247</div>
+                                    <div class="text-sm opacity-80 font-medium">Normativas</div>
+                                </div>
+                                <div class="bg-white/15 backdrop-blur-sm rounded-xl p-5 text-center transition-all duration-300 hover:bg-white/25 hover:transform hover:scale-105 hover:shadow-lg border border-white/10 group">
+                                    <div class="w-14 h-14 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-3 group-hover:bg-white/30 transition-all duration-300 transform group-hover:rotate-12">
+                                        <i class="fas fa-file-pdf text-2xl"></i>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">856</div>
+                                    <div class="text-sm opacity-80 font-medium">Documentos</div>
+                                </div>
+                                <div class="bg-white/15 backdrop-blur-sm rounded-xl p-5 text-center transition-all duration-300 hover:bg-white/25 hover:transform hover:scale-105 hover:shadow-lg border border-white/10 group">
+                                    <div class="w-14 h-14 mx-auto rounded-full bg-white/20 flex items-center justify-center mb-3 group-hover:bg-white/30 transition-all duration-300 transform group-hover:rotate-12">
+                                        <i class="fas fa-users text-2xl"></i>
+                                    </div>
+                                    <div class="text-3xl font-bold mb-1">342</div>
+                                    <div class="text-sm opacity-80 font-medium">Usuarios</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Icono decorativo mejorado -->
+                        <div class="hidden md:block animate-fade-in-right">
+                            <div class="w-48 h-48 bg-gradient-to-br from-white/20 to-white/5 rounded-full flex items-center justify-center shadow-2xl border border-white/20 backdrop-blur-sm transform transition-all duration-500 hover:rotate-12 hover:scale-110">
+                                <i class="fas fa-shipping-fast text-6xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Control Principal con KPIs y Gráficos -->            
+            <div class="w-full mx-auto mb-10">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100">
+                    <div class="flex justify-between items-center p-6 bg-gradient-to-r from-gray-50 to-gray-100">
+                        <div class="flex items-center space-x-5">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-chart-line text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 transition-colors duration-300">Panel de Control</h3>
+                        </div>
+                        <div class="flex space-x-2">
+                            <select class="bg-white border border-gray-300 text-gray-700 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="today">Hoy</option>
+                                <option value="week" selected>Esta semana</option>
+                                <option value="month">Este mes</option>
+                                <option value="quarter">Este trimestre</option>
+                                <option value="year">Este año</option>
+                            </select>
+                            <button class="bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg px-3 py-1 text-sm transition-all duration-300">
+                                <i class="fas fa-sync-alt mr-1"></i> Actualizar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <!-- KPIs principales -->                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                            <!-- KPI 1: Envíos Activos -->                            
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 border border-blue-200 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-all duration-300">
+                                        <i class="fas fa-shipping-fast text-blue-600 text-xl"></i>
+                                    </div>
+                                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-500/20 text-blue-700">+12%</span>
+                                </div>
+                                <h4 class="text-2xl font-bold text-gray-800 mb-1">128</h4>
+                                <p class="text-sm text-gray-600">Envíos Activos</p>
+                                <div class="mt-3 h-1 w-full bg-blue-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-blue-500 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- KPI 2: Entregas Completadas -->                            
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 border border-green-200 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-all duration-300">
+                                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                                    </div>
+                                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-green-500/20 text-green-700">+8%</span>
+                                </div>
+                                <h4 class="text-2xl font-bold text-gray-800 mb-1">342</h4>
+                                <p class="text-sm text-gray-600">Entregas Completadas</p>
+                                <div class="mt-3 h-1 w-full bg-green-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-500 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- KPI 3: Tiempo Promedio -->                            
+                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 border border-purple-200 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-all duration-300">
+                                        <i class="fas fa-clock text-purple-600 text-xl"></i>
+                                    </div>
+                                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-purple-500/20 text-purple-700">-5%</span>
+                                </div>
+                                <h4 class="text-2xl font-bold text-gray-800 mb-1">2.4 días</h4>
+                                <p class="text-sm text-gray-600">Tiempo Promedio</p>
+                                <div class="mt-3 h-1 w-full bg-purple-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-purple-500 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- KPI 4: Eficiencia -->                            
+                            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-xl p-5 border border-amber-200 transition-all duration-300 hover:shadow-md hover:-translate-y-1 group">
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-all duration-300">
+                                        <i class="fas fa-tachometer-alt text-amber-600 text-xl"></i>
+                                    </div>
+                                    <span class="text-xs font-medium px-2 py-1 rounded-full bg-amber-500/20 text-amber-700">+3%</span>
+                                </div>
+                                <h4 class="text-2xl font-bold text-gray-800 mb-1">92%</h4>
+                                <p class="text-sm text-gray-600">Eficiencia Logística</p>
+                                <div class="mt-3 h-1 w-full bg-amber-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500 rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gráficos y Análisis -->                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Gráfico de Rendimiento -->                            
+                            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 transition-all duration-300 hover:shadow-md">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-bold text-gray-800">Rendimiento de Envíos</h4>
+                                    <div class="flex space-x-2">
+                                        <button class="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700">Diario</button>
+                                        <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">Semanal</button>
+                                        <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700">Mensual</button>
+                                    </div>
+                                </div>
+                                <div class="h-72 w-full bg-gray-50 rounded-lg flex items-center justify-center">
+                                    <!-- Aquí iría el gráfico real con Chart.js o similar -->
+                                    <div class="relative w-full h-full p-4">
+                                        <div class="absolute bottom-0 left-0 right-0 flex justify-between px-4">
+                                            <div class="text-xs text-gray-500">Lun</div>
+                                            <div class="text-xs text-gray-500">Mar</div>
+                                            <div class="text-xs text-gray-500">Mié</div>
+                                            <div class="text-xs text-gray-500">Jue</div>
+                                            <div class="text-xs text-gray-500">Vie</div>
+                                        </div>
+                                        <!-- Barras del gráfico (simuladas) -->
+                                        <div class="absolute bottom-6 left-0 right-0 flex justify-around px-4 items-end h-56">
+                                            <div class="w-12 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 65%"></div>
+                                            <div class="w-12 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 85%"></div>
+                                            <div class="w-12 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 45%"></div>
+                                            <div class="w-12 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 75%"></div>
+                                            <div class="w-12 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 90%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Gráfico de Distribución -->
+                            <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5 transition-all duration-300 hover:shadow-md">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-bold text-gray-800">Distribución por Tipo</h4>
+                                    <div class="flex space-x-2">
+                                        <button class="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700"><i class="fas fa-download mr-1"></i> Exportar</button>
+                                    </div>
+                                </div>
+                                <div class="h-72 w-full bg-gray-50 rounded-lg flex items-center justify-center">
+                                    <!-- Aquí iría el gráfico de pastel real -->
+                                    <div class="relative w-full h-full p-4 flex items-center justify-center">
+                                        <!-- Gráfico circular simulado -->
+                                        <div class="w-52 h-52 rounded-full border-8 border-blue-500 relative overflow-hidden">
+                                            <div class="absolute top-0 left-0 w-1/2 h-full bg-green-500"></div>
+                                            <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-amber-500"></div>
+                                            <div class="absolute bottom-0 right-0 w-1/4 h-1/2 bg-purple-500"></div>
+                                            <div class="w-36 h-36 rounded-full bg-gray-50 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                                        </div>
+                                        <!-- Leyenda -->
+                                        <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-6 text-sm">
+                                            <div class="flex items-center">
+                                                <div class="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                                                <span>Terrestre (40%)</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                                                <span>Marítimo (25%)</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="w-4 h-4 bg-amber-500 rounded-full mr-2"></div>
+                                                <span>Aéreo (20%)</span>
+                                            </div>
+                                            <div class="flex items-center">
+                                                <div class="w-4 h-4 bg-purple-500 rounded-full mr-2"></div>
+                                                <span>Otro (15%)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Secciones Principales del Sistema -->
+            <div class="w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+                <!-- Sección: Seguimiento de Envíos -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100 flex flex-col h-full">
+                    <div class="p-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-truck-loading text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Seguimiento de Envíos</h3>
+                        </div>
+                        <p class="text-blue-100 text-sm">Monitorea en tiempo real el estado de tus envíos y entregas</p>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <div class="space-y-4">
+                            <!-- Buscador de envíos -->
+                            <div class="relative">
+                                <input type="text" placeholder="Buscar por # de guía o referencia" class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
+                                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Lista de envíos recientes -->
+                            <div class="space-y-3">
+                                <h4 class="font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-history text-blue-500 mr-2"></i> Envíos Recientes
+                                </h4>
+                                
+                                <!-- Envío 1 -->
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="font-medium text-gray-800">GX-78452-MX</div>
+                                            <div class="text-sm text-gray-600">Ciudad de México → Monterrey</div>
+                                        </div>
+                                        <div class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium">En tránsito</div>
+                                    </div>
+                                    <div class="mt-3 flex items-center justify-between text-xs text-gray-500">
+                                        <span>Actualizado: hace 2 horas</span>
+                                        <span class="flex items-center text-blue-600 hover:text-blue-700">
+                                            <i class="fas fa-eye mr-1"></i> Ver detalles
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Envío 2 -->
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="font-medium text-gray-800">GX-78123-MX</div>
+                                            <div class="text-sm text-gray-600">Guadalajara → Cancún</div>
+                                        </div>
+                                        <div class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">En aduana</div>
+                                    </div>
+                                    <div class="mt-3 flex items-center justify-between text-xs text-gray-500">
+                                        <span>Actualizado: hace 5 horas</span>
+                                        <span class="flex items-center text-blue-600 hover:text-blue-700">
+                                            <i class="fas fa-eye mr-1"></i> Ver detalles
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t border-gray-100">
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                            <i class="fas fa-search"></i> Ver todos los envíos
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sección: Gestión de Flota -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100 flex flex-col h-full">
+                    <div class="p-6 bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-truck text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Gestión de Flota</h3>
+                        </div>
+                        <p class="text-purple-100 text-sm">Administra y optimiza tu flota de vehículos</p>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <div class="space-y-4">
+                            <!-- Estado de la flota -->
+                            <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                                <div class="text-sm font-medium text-gray-700">Estado de la Flota</div>
+                                <div class="flex space-x-3">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
+                                        <span class="text-xs">Activos (18)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-amber-500 rounded-full mr-1"></div>
+                                        <span class="text-xs">En mantenimiento (4)</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
+                                        <span class="text-xs">Inactivos (2)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Vehículos disponibles -->
+                            <div class="space-y-3">
+                                <h4 class="font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-truck text-purple-500 mr-2"></i> Vehículos Disponibles
+                                </h4>
+                                
+                                <!-- Lista de vehículos -->
+                                <div class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                                    <!-- Vehículo 1 -->
+                                    <div class="flex items-center justify-between bg-purple-50 p-3 rounded-lg border border-purple-100">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-700">
+                                                <i class="fas fa-truck-moving text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-gray-800 text-sm">Camión - MX-7845</div>
+                                                <div class="text-xs text-gray-500">Capacidad: 10 toneladas</div>
+                                            </div>
+                                        </div>
+                                        <div class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">Disponible</div>
+                                    </div>
+                                    
+                                    <!-- Vehículo 2 -->
+                                    <div class="flex items-center justify-between bg-purple-50 p-3 rounded-lg border border-purple-100">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-700">
+                                                <i class="fas fa-truck text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-gray-800 text-sm">Furgoneta - MX-3421</div>
+                                                <div class="text-xs text-gray-500">Capacidad: 3 toneladas</div>
+                                            </div>
+                                        </div>
+                                        <div class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-xs">Disponible</div>
+                                    </div>
+                                    
+                                    <!-- Vehículo 3 -->
+                                    <div class="flex items-center justify-between bg-purple-50 p-3 rounded-lg border border-purple-100">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-700">
+                                                <i class="fas fa-truck-pickup text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-gray-800 text-sm">Pickup - MX-9012</div>
+                                                <div class="text-xs text-gray-500">Capacidad: 1 tonelada</div>
+                                            </div>
+                                        </div>
+                                        <div class="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs">En ruta</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t border-gray-100">
+                        <button class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                            <i class="fas fa-cog"></i> Administrar flota
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sección: Normativas y Documentación -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100 flex flex-col h-full">
+                    <div class="p-6 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                                <i class="fas fa-file-alt text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Normativas y Documentación</h3>
+                        </div>
+                        <p class="text-indigo-100 text-sm">Accede a documentos y normativas actualizadas</p>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <div class="space-y-4">
+                            <!-- Buscador de documentos -->
+                            <div class="relative">
+                                <input type="text" placeholder="Buscar normativas o documentos" class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300">
+                                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- Categorías de documentos -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-indigo-50 rounded-lg p-3 border border-indigo-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mb-2">
+                                        <i class="fas fa-file-import"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Importación</div>
+                                    <div class="text-xs text-gray-500">24 docs</div>
+                                </div>
+                                
+                                <div class="bg-indigo-50 rounded-lg p-3 border border-indigo-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mb-2">
+                                        <i class="fas fa-file-export"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Exportación</div>
+                                    <div class="text-xs text-gray-500">18 docs</div>
+                                </div>
+                                
+                                <div class="bg-indigo-50 rounded-lg p-3 border border-indigo-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mb-2">
+                                        <i class="fas fa-clipboard-list"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Aduanas</div>
+                                    <div class="text-xs text-gray-500">56 docs</div>
+                                </div>
+                                
+                                <div class="bg-indigo-50 rounded-lg p-3 border border-indigo-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mb-2">
+                                        <i class="fas fa-balance-scale"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Regulaciones</div>
+                                    <div class="text-xs text-gray-500">32 docs</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Documentos recientes -->
+                            <div class="space-y-2">
+                                <h4 class="font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-clock text-indigo-500 mr-2"></i> Actualizados Recientemente
+                                </h4>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-pdf text-red-500"></i>
+                                        <div class="text-sm">Guía de Importación 2023</div>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Hace 2 días</div>
+                                </div>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-pdf text-red-500"></i>
+                                        <div class="text-sm">Normativa Aduanera MX-2023</div>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Hace 5 días</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 border-t border-gray-100">
+                        <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-xl font-medium flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                            <i class="fas fa-database"></i> Ver base de datos completa
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección de Alertas y Notificaciones -->
+            <div class="w-full mx-auto mb-10">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100">
+                    <div class="flex justify-between items-center p-6 bg-gradient-to-r from-gray-50 to-gray-100">
+                        <div class="flex items-center space-x-5">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-pink-600 flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-bell text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 transition-colors duration-300">Alertas y Notificaciones</h3>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="bg-red-50 hover:bg-red-100 text-red-600 rounded-lg px-3 py-1 text-sm transition-all duration-300">
+                                <i class="fas fa-bell mr-1"></i> Ver todas
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <!-- Alerta 1 -->
+                            <div class="bg-red-50 rounded-lg p-4 border border-red-100 flex items-start space-x-4">
+                                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600 flex-shrink-0 mt-1">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">Retraso en envío GX-78452-MX</h4>
+                                        <span class="text-xs text-gray-500">Hace 1 hora</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">El envío con destino a Monterrey presenta un retraso de 24 horas debido a condiciones climáticas adversas.</p>
+                                    <div class="mt-3 flex space-x-3">
+                                        <button class="text-xs px-3 py-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors duration-300">Ver detalles</button>
+                                        <button class="text-xs px-3 py-1 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors duration-300">Tomar acción</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Alerta 2 -->
+                            <div class="bg-amber-50 rounded-lg p-4 border border-amber-100 flex items-start space-x-4">
+                                <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0 mt-1">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">Documentación pendiente</h4>
+                                        <span class="text-xs text-gray-500">Hace 3 horas</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">Se requiere completar la documentación aduanera para el envío GX-78123-MX antes de las 18:00 hrs.</p>
+                                    <div class="mt-3 flex space-x-3">
+                                        <button class="text-xs px-3 py-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors duration-300">Ver detalles</button>
+                                        <button class="text-xs px-3 py-1 bg-amber-600 text-white rounded-full hover:bg-amber-700 transition-colors duration-300">Completar docs</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Alerta 3 -->
+                            <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 flex items-start space-x-4">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 mt-1">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="flex-grow">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">Actualización de normativa</h4>
+                                        <span class="text-xs text-gray-500">Hace 5 horas</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">Se ha actualizado la normativa de importación de productos electrónicos. Revisa los cambios importantes.</p>
+                                    <div class="mt-3 flex space-x-3">
+                                        <button class="text-xs px-3 py-1 bg-white border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors duration-300">Ver detalles</button>
+                                        <button class="text-xs px-3 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300">Ver normativa</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección de Análisis de Rutas y Reportes -->
+            <div class="w-full mx-auto mb-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Análisis de Rutas -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100">
+                    <div class="flex justify-between items-center p-6 bg-gradient-to-r from-gray-50 to-gray-100">
+                        <div class="flex items-center space-x-5">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-route text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 transition-colors duration-300">Análisis de Rutas</h3>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="bg-green-50 hover:bg-green-100 text-green-600 rounded-lg px-3 py-1 text-sm transition-all duration-300">
+                                <i class="fas fa-plus mr-1"></i> Nueva ruta
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <!-- Mapa de rutas (simulado) -->
+                            <div class="h-64 bg-gray-100 rounded-xl relative overflow-hidden border border-gray-200">
+                                <!-- Simulación de un mapa -->
+                                <div class="absolute inset-0 bg-blue-50"></div>
+                                <div class="absolute top-1/4 left-1/4 w-2 h-2 rounded-full bg-red-500 shadow-md"></div>
+                                <div class="absolute top-1/3 right-1/3 w-2 h-2 rounded-full bg-red-500 shadow-md"></div>
+                                <div class="absolute bottom-1/4 right-1/4 w-2 h-2 rounded-full bg-red-500 shadow-md"></div>
+                                <div class="absolute top-1/4 left-1/4 w-32 h-0.5 bg-blue-500 transform rotate-45"></div>
+                                <div class="absolute top-1/3 right-1/3 w-24 h-0.5 bg-blue-500 transform -rotate-45"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-white/80 px-4 py-2 rounded-lg shadow-md backdrop-blur-sm">
+                                        <span class="text-sm font-medium text-gray-700">Mapa interactivo de rutas</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Rutas optimizadas -->
+                            <div class="space-y-3">
+                                <h4 class="font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-star text-amber-500 mr-2"></i> Rutas Optimizadas
+                                </h4>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                            <i class="fas fa-route"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">CDMX → Monterrey</div>
+                                            <div class="text-xs text-gray-500">Ahorro: 120km (15%)</div>
+                                        </div>
+                                    </div>
+                                    <button class="text-xs px-3 py-1 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">Ver ruta</button>
+                                </div>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                            <i class="fas fa-route"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">Guadalajara → Mérida</div>
+                                            <div class="text-xs text-gray-500">Ahorro: 85km (8%)</div>
+                                        </div>
+                                    </div>
+                                    <button class="text-xs px-3 py-1 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors duration-300">Ver ruta</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reportes Personalizados -->
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up border border-gray-100">
+                    <div class="flex justify-between items-center p-6 bg-gradient-to-r from-gray-50 to-gray-100">
+                        <div class="flex items-center space-x-5">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-md transition-all duration-300 transform hover:scale-110">
+                                <i class="fas fa-chart-pie text-xl text-white"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 transition-colors duration-300">Reportes Personalizados</h3>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg px-3 py-1 text-sm transition-all duration-300">
+                                <i class="fas fa-plus mr-1"></i> Nuevo reporte
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <!-- Tipos de reportes -->
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-amber-50 rounded-lg p-3 border border-amber-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-2">
+                                        <i class="fas fa-truck-loading"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Rendimiento</div>
+                                    <div class="text-xs text-gray-500">Envíos y entregas</div>
+                                </div>
+                                
+                                <div class="bg-amber-50 rounded-lg p-3 border border-amber-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-2">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Financiero</div>
+                                    <div class="text-xs text-gray-500">Costos y gastos</div>
+                                </div>
+                                
+                                <div class="bg-amber-50 rounded-lg p-3 border border-amber-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-2">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Clientes</div>
+                                    <div class="text-xs text-gray-500">Satisfacción</div>
+                                </div>
+                                
+                                <div class="bg-amber-50 rounded-lg p-3 border border-amber-100 transition-all duration-300 hover:shadow-md hover:-translate-y-1 cursor-pointer text-center">
+                                    <div class="w-10 h-10 mx-auto rounded-full bg-amber-100 flex items-center justify-center text-amber-600 mb-2">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-800">Operaciones</div>
+                                    <div class="text-xs text-gray-500">Eficiencia</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Reportes recientes -->
+                            <div class="space-y-2">
+                                <h4 class="font-medium text-gray-700 flex items-center">
+                                    <i class="fas fa-history text-amber-500 mr-2"></i> Reportes Recientes
+                                </h4>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-amber-500"></i>
+                                        <div class="text-sm">Rendimiento de Entregas - Abril 2023</div>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Hace 2 días</div>
+                                </div>
+                                
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <i class="fas fa-file-alt text-amber-500"></i>
+                                        <div class="text-sm">Análisis de Costos Q1 2023</div>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Hace 1 semana</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer mejorado con diseño moderno -->
+        <footer class="bg-gradient-to-br from-gray-800 to-gray-900 text-white py-12 relative overflow-hidden mt-auto">
+            <!-- Elementos decorativos de fondo -->
+            <div class="absolute inset-0 overflow-hidden opacity-10">
+                <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-blue-500"></div>
+                <div class="absolute left-1/3 -bottom-32 w-96 h-96 rounded-full bg-indigo-500"></div>
+                <div class="absolute right-1/4 top-1/3 w-32 h-32 rounded-full bg-purple-500"></div>
+            </div>
+            
+            <div class="container mx-auto px-6 relative z-10">
+                <!-- Sección superior del footer -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                    <!-- Columna 1: Información de la empresa -->
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                                <i class="fas fa-shipping-fast text-white"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">LogiXport</h3>
+                        </div>
+                        <p class="text-gray-300 leading-relaxed">Sistema integral de gestión logística y normativas para optimizar tus operaciones de transporte y distribución.</p>
+                        <div class="pt-4">
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-blue-600 flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                    <i class="fab fa-facebook-f text-white"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-blue-400 flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                    <i class="fab fa-twitter text-white"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-gray-700 hover:bg-blue-700 flex items-center justify-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                    <i class="fab fa-linkedin-in text-white"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Columna 2: Enlaces rápidos -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold text-white mb-6 pb-2 border-b border-gray-700">Enlaces Rápidos</h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="/dashboard" class="text-gray-300 hover:text-white flex items-center space-x-2 transition-all duration-300 hover:translate-x-1">
+                                    <i class="fas fa-chevron-right text-xs text-blue-400"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/information" class="text-gray-300 hover:text-white flex items-center space-x-2 transition-all duration-300 hover:translate-x-1">
+                                    <i class="fas fa-chevron-right text-xs text-blue-400"></i>
+                                    <span>Información</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-gray-300 hover:text-white flex items-center space-x-2 transition-all duration-300 hover:translate-x-1">
+                                    <i class="fas fa-chevron-right text-xs text-blue-400"></i>
+                                    <span>Normativas</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-gray-300 hover:text-white flex items-center space-x-2 transition-all duration-300 hover:translate-x-1">
+                                    <i class="fas fa-chevron-right text-xs text-blue-400"></i>
+                                    <span>Soporte</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Columna 3: Contacto -->
+                    <div class="space-y-4">
+                        <h4 class="text-lg font-bold text-white mb-6 pb-2 border-b border-gray-700">Contacto</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-1">
+                                    <i class="fas fa-map-marker-alt text-blue-400"></i>
+                                </div>
+                                <span class="text-gray-300">Av. Insurgentes Sur 1602, Ciudad de México</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-1">
+                                    <i class="fas fa-envelope text-blue-400"></i>
+                                </div>
+                                <span class="text-gray-300">contacto@logixport.mx</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mt-1">
+                                    <i class="fas fa-phone-alt text-blue-400"></i>
+                                </div>
+                                <span class="text-gray-300">+52 55 1234 5678</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Línea divisoria con gradiente -->
+                <div class="h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent my-8"></div>
+                
+                <!-- Sección inferior del footer -->
+                <div class="flex flex-col md:flex-row justify-between items-center text-gray-400 text-sm">
+                    <div>&copy; 2023 LogiXport. Todos los derechos reservados.</div>
+                    <div class="mt-4 md:mt-0">
+                        <ul class="flex space-x-6">
+                            <li><a href="#" class="hover:text-white transition-colors duration-300">Términos y Condiciones</a></li>
+                            <li><a href="#" class="hover:text-white transition-colors duration-300">Política de Privacidad</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Script mejorado para manejar las secciones expandibles y animaciones -->
+    <script>
+        // Función mejorada para alternar secciones con animaciones
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const arrow = document.getElementById(sectionId.replace('section', 'arrow'));
+            
+            if (!section || !arrow) return;
+            
+            if (section.style.maxHeight === '' || section.style.maxHeight === '0px') {
+                // Abrir sección con animación
+                section.style.display = 'block';
+                section.style.maxHeight = section.scrollHeight + 'px';
+                arrow.style.transform = 'rotate(180deg)';
+                section.classList.add('opacity-100');
+                section.classList.remove('opacity-0');
+            } else {
+                // Cerrar sección con animación
+                section.style.maxHeight = '0px';
+                arrow.style.transform = 'rotate(0)';
+                section.classList.add('opacity-0');
+                section.classList.remove('opacity-100');
+                
+                // Ocultar después de la animación
+                setTimeout(() => {
+                    if (section.style.maxHeight === '0px') {
+                        section.style.display = 'none';
+                    }
+                }, 300);
+            }
+        }
+        
+        // Inicializar todas las secciones con animaciones
+        document.addEventListener('DOMContentLoaded', function() {
+            // Añadir clases de transición a todas las secciones
+            const allSections = document.querySelectorAll('[id$="-section"]');
+            allSections.forEach(section => {
+                section.classList.add('transition-all', 'duration-300', 'ease-in-out', 'overflow-hidden');
+            });
+            
+            // Inicializar secciones como abiertas
+            const sections = ['info-section', 'normativas-section'];
+            sections.forEach(section => {
+                const sectionElement = document.getElementById(section);
+                if (sectionElement) {
+                    sectionElement.style.display = 'block';
+                    sectionElement.style.maxHeight = sectionElement.scrollHeight + 'px';
+                    sectionElement.classList.add('opacity-100');
+                    sectionElement.classList.remove('opacity-0');
+                    
+                    const arrow = document.getElementById(section.replace('section', 'arrow'));
+                    if (arrow) {
+                        arrow.style.transform = 'rotate(180deg)';
+                    }
+                }
+            });
+        });
+        
+        // El código del menú hamburguesa se ha movido a responsive-menu.js para mejor organización
+        
+        // Función para cerrar sesión
+        function logout() {
+            // Mostrar animación de carga
+            const authCheck = document.getElementById('auth-check');
+            if (authCheck) {
+                authCheck.style.display = 'flex';
+                setTimeout(() => {
+                    window.location.href = '/logout';
+                }, 800);
+            } else {
+                window.location.href = '/logout';
+            }
+        }
+    </script>
+</body>
+</html>

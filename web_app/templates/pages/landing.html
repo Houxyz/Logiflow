@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiXport - Soluciones Logísticas Inteligentes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind con colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
+                        accent: '#e74c3c',
+                        success: '#27ae60',
+                        warning: '#f39c12'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-in-right': 'fadeInRight 0.5s ease-out',
+                        'gradient': 'gradientAnimation 10s ease infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        gradientAnimation: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="description" content="Plataforma integral de gestión logística para optimizar tus operaciones de transporte y distribución">
+    <!-- Cargar script de autenticación al inicio para verificar sesión antes de mostrar contenido -->
+    <script src="/templates/style/auth.js"></script>
+    <script>
+        // Verificar autenticación después de que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const isLoggedIn = await isAuthenticated();
+                if (isLoggedIn) {
+                    const user = await getCurrentUser();
+                    if (user && user.rol === 'admin') {
+                        window.location.replace('/admin');
+                    } else {
+                        window.location.replace('/dashboard');
+                    }
+                } else {
+                    // Mostrar la página de landing solo si no hay sesión iniciada
+                    document.body.classList.remove('opacity-0');
+                }
+            } catch (error) {
+                console.error('Error al verificar autenticación:', error);
+                // Continuar mostrando la página de landing en caso de error
+                document.body.classList.remove('opacity-0');
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen opacity-0 transition-opacity duration-300">
+    <!-- Pantalla de verificación de autenticación -->
+    <div id="auth-check" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 flex justify-center items-center z-50 animate-gradient">
+        <div class="text-center text-white animate-fade-in-up bg-white/10 p-8 rounded-2xl backdrop-blur-sm shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin text-4xl"></i>
+            </div>
+            <p class="text-xl font-medium">Verificando autenticación...</p>
+            <div class="mt-4 w-32 h-1 mx-auto bg-white/30 rounded-full overflow-hidden">
+                <div class="h-full w-1/2 bg-white rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header con navegación -->
+    <header class="bg-white shadow-md sticky top-0 z-40 border-b border-gray-100">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LogiXport</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="/information" class="text-gray-700 hover:text-secondary transition-colors duration-300">Nosotros</a>
+                <a href="#caracteristicas" class="text-gray-700 hover:text-secondary transition-colors duration-300">Características</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/login" class="px-5 py-2 border border-secondary text-secondary rounded-full hover:bg-secondary hover:text-white transition-all duration-300">Iniciar Sesión</a>
+                <a href="/register" class="px-5 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">Registrarse</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Sección Hero Principal -->
+    <section class="py-20 bg-gradient-to-br from-primary to-secondary text-white overflow-hidden relative">
+        <!-- Elementos decorativos de fondo -->
+        <div class="absolute inset-0 overflow-hidden opacity-20">
+            <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></div>
+            <div class="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-white/10"></div>
+            <div class="absolute right-1/4 top-1/3 w-20 h-20 rounded-full bg-white/10"></div>
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up">Optimiza tu Logística con Inteligencia</h1>
+                <p class="text-xl opacity-90 mb-10 animate-fade-in-up">
+                    Gestiona tus operaciones de transporte, inventario y distribución desde una plataforma única. 
+                    Reduce costos, mejora tiempos de entrega y maximiza la eficiencia de tu cadena de suministro.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in-up">
+                    <a href="/register" class="px-8 py-3 bg-white text-primary font-medium rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">Comenzar Gratis</a>
+                    <a href="#caracteristicas" class="px-8 py-3 bg-transparent border border-white text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300">Ver Características</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Características -->
+    <section id="caracteristicas" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">¿Por qué elegir LogiXport?</h2>
+                <p class="text-xl text-gray-600">
+                    Herramientas profesionales diseñadas específicamente para empresas logísticas modernas
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-secondary mb-6">🚚</div>
+                    <h3 class="text-xl font-bold text-primary mb-3">Gestión de Flotas</h3>
+                    <p class="text-gray-600">Monitorea en tiempo real la ubicación, estado y rendimiento de toda tu flota de vehículos. Optimiza rutas y reduce costos operativos.</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-secondary mb-6">📊</div>
+                    <h3 class="text-xl font-bold text-primary mb-3">Analytics Avanzado</h3>
+                    <p class="text-gray-600">Obtén insights detallados sobre tus operaciones con dashboards intuitivos y reportes automatizados para tomar decisiones informadas.</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-secondary mb-6">🗺️</div>
+                    <h3 class="text-xl font-bold text-primary mb-3">Optimización de Rutas</h3>
+                    <p class="text-gray-600">Algoritmos inteligentes que calculan las rutas más eficientes considerando tráfico, distancia y restricciones específicas.</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-secondary mb-6">📦</div>
+                    <h3 class="text-xl font-bold text-primary mb-3">Control de Inventario</h3>
+                    <p class="text-gray-600">Gestiona tu inventario en múltiples almacenes con seguimiento en tiempo real y alertas automáticas de stock bajo.</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-secondary mb-6">🔔</div>
+                    <h3 class="text-xl font-bold text-primary mb-3">Notificaciones Inteligentes</h3>
+                    <p class="text-gray-600">Mantente informado con alertas personalizadas sobre entregas, retrasos, mantenimiento y eventos críticos.</p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-secondary mb-6">🔒</div>
+                    <h3 class="text-xl font-bold text-primary mb-3">Seguridad Empresarial</h3>
+                    <p class="text-gray-600">Protección de datos de nivel empresarial con encriptación, backups automáticos y control de acceso granular.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Registro -->
+    <section id="registro" class="py-20 bg-gradient-to-br from-primary to-secondary text-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Listo para transformar tu logística?</h2>
+                <p class="text-xl opacity-90 mb-10">
+                    Únete a más de 500 empresas que ya optimizan sus operaciones con LogiXport
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/login" class="px-8 py-3 bg-white text-primary font-medium rounded-full hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">Iniciar Sesión</a>
+                    <a href="/register" class="px-8 py-3 bg-transparent border border-white text-white font-medium rounded-full hover:bg-white/10 transition-all duration-300">Crear Cuenta Gratis</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-secondary">LogiXport</h3>
+                    <p class="text-gray-400">Soluciones logísticas inteligentes para empresas modernas.</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p class="flex items-center"><i class="fas fa-map-marker-alt mr-2 text-secondary"></i> UTEM Manzanillo</p>
+                        <p class="flex items-center"><i class="fas fa-phone mr-2 text-secondary"></i> (314) 166-9084</p>
+                        <p class="flex items-center"><i class="fas fa-phone mr-2 text-secondary"></i> (314) 202-9144</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contacto Directo</h4>
+                    <div class="flex flex-col space-y-3">
+                        <a href="mailto:hoeruxyz@gmail.com" class="flex items-center bg-white/10 hover:bg-white/20 transition-colors duration-300 rounded-lg p-3">
+                            <i class="fas fa-envelope mr-3 text-secondary"></i>
+                            <span>Correo</span>
+                        </a>
+                        <a href="https://wa.me/5213141669084" target="_blank" class="flex items-center bg-white/10 hover:bg-white/20 transition-colors duration-300 rounded-lg p-3">
+                            <i class="fab fa-whatsapp mr-3 text-green-400"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-6 text-center text-gray-500">
+                <p>&copy; 2025 LogiXport. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript para interactividad básica -->
+    <script>
+        // Ocultar pantalla de verificación después de cargar
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('auth-check').style.display = 'none';
+            }, 500);
+        });
+
+        // Smooth scrolling para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animación de aparición al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100');
+                    entry.target.classList.add('translate-y-0');
+                }
+            });
+        }, observerOptions);
+
+        // Aplicar animaciones a las tarjetas de características
+        document.querySelectorAll('#caracteristicas .rounded-2xl').forEach(card => {
+            card.classList.add('opacity-0', 'translate-y-8', 'transition-all', 'duration-700');
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
