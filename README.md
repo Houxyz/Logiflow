@@ -1,6 +1,6 @@
 # 🚚 LogiXPort – Sistema de Gestión Logística  
 
-_LogiFlow_ es una plataforma **escalable** diseñada para simplificar y optimizar la gestión logística, incluyendo procesos de **importación, exportación, aranceles, control de rutas y transporte**.  
+_LogiXPort_ es una plataforma **escalable** diseñada para simplificar y optimizar la gestión logística, incluyendo procesos de **importación, exportación, aranceles, control de rutas y transporte**.  
 
 Su objetivo es **centralizar y automatizar** operaciones críticas, facilitando la toma de decisiones y reduciendo costos operativos.  
 
