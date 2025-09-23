@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - LogiXport</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración de Tailwind con colores personalizados -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2c3e50',
+                        secondary: '#3498db',
+                        accent: '#e74c3c',
+                        success: '#27ae60',
+                        warning: '#f39c12'
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out',
+                        'fade-in-right': 'fadeInRight 0.5s ease-out',
+                        'gradient': 'gradientAnimation 10s ease infinite'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        gradientAnimation: {
+                            '0%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                            '100%': { backgroundPosition: '0% 50%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Cargar script de autenticación al inicio para verificar sesión antes de mostrar contenido -->
+    <script src="/templates/style/auth.js"></script>
+    <script>
+        // Verificar autenticación después de que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const isLoggedIn = await isAuthenticated();
+                if (isLoggedIn) {
+                    const user = await getCurrentUser();
+                    if (user && user.rol === 'admin') {
+                        window.location.replace('/admin');
+                    } else {
+                        window.location.replace('/dashboard');
+                    }
+                } else {
+                    // Mostrar la página de login solo si no hay sesión iniciada
+                    document.body.classList.remove('opacity-0');
+                }
+            } catch (error) {
+                console.error('Error al verificar autenticación:', error);
+                // Continuar mostrando la página de login en caso de error
+                document.body.classList.remove('opacity-0');
+            }
+        });
+    </script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 min-h-screen opacity-0 transition-opacity duration-300">
+    <!-- Pantalla de verificación de autenticación -->
+    <div id="auth-check" class="fixed inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 flex justify-center items-center z-50 animate-gradient">
+        <div class="text-center text-white animate-fade-in-up bg-white/10 p-8 rounded-2xl backdrop-blur-sm shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
+                <i class="fas fa-spinner fa-spin text-4xl"></i>
+            </div>
+            <p class="text-xl font-medium">Verificando autenticación...</p>
+            <div class="mt-4 w-32 h-1 mx-auto bg-white/30 rounded-full overflow-hidden">
+                <div class="h-full w-1/2 bg-white rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header simplificado -->
+    <header class="bg-white shadow-md sticky top-0 z-40 border-b border-gray-100">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">LogiXport</a>
+            <a href="/" class="bg-gray-100 hover:bg-gray-200 text-primary px-5 py-2 rounded-full shadow-sm hover:shadow transition-all duration-300 flex items-center space-x-2">
+                <i class="fas fa-home"></i>
+                <span>Volver al Inicio</span>
+            </a>
+        </nav>
+    </header>
+
+    <!-- Contenedor principal de login -->
+    <div class="container mx-auto px-4 py-12 flex justify-center items-center">
+        <div class="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row animate-fade-in-up">
+            <!-- Lado izquierdo - Información -->
+            <div class="w-full md:w-1/2 bg-gradient-to-br from-primary to-secondary text-white p-8 md:p-12 flex flex-col justify-center relative overflow-hidden">
+                <!-- Elementos decorativos de fondo -->
+                <div class="absolute inset-0 overflow-hidden opacity-20">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-white/10"></div>
+                    <div class="absolute left-1/3 -bottom-20 w-80 h-80 rounded-full bg-white/10"></div>
+                    <div class="absolute right-1/4 top-1/3 w-20 h-20 rounded-full bg-white/10"></div>
+                </div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Bienvenido de vuelta</h2>
+                    <p class="text-lg opacity-90 mb-10">Accede a tu plataforma de gestión logística y optimiza tus operaciones.</p>
+                    
+                    <div class="space-y-4 mb-10">
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20 flex items-center space-x-4 transition-all duration-300 hover:bg-white/20 hover:shadow-lg transform hover:-translate-y-1">
+                            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <span class="text-lg">Gestión de flotas en tiempo real</span>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20 flex items-center space-x-4 transition-all duration-300 hover:bg-white/20 hover:shadow-lg transform hover:-translate-y-1">
+                            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span class="text-lg">Reportes y analytics avanzados</span>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm border border-white/20 flex items-center space-x-4 transition-all duration-300 hover:bg-white/20 hover:shadow-lg transform hover:-translate-y-1">
+                            <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-2xl">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <span class="text-lg">Optimización inteligente de rutas</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center md:text-left">
+                        <p class="text-white/90">¿No tienes una cuenta? <a href="/register" class="text-white font-semibold underline hover:text-blue-200 transition-colors duration-300">Regístrate aquí</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lado derecho - Formulario -->
+            <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                <div class="max-w-md mx-auto w-full">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-primary mb-2">Iniciar Sesión</h1>
+                        <p class="text-gray-600">Ingresa tus credenciales para acceder</p>
+                    </div>
+
+                    <form class="space-y-6" id="loginForm">
+                        <div class="space-y-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                    placeholder="tu@empresa.com"
+                                    required
+                                >
+                            </div>
+                            <div class="text-accent text-sm min-h-5" id="emailError"></div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                    placeholder="••••••••"
+                                    required
+                                >
+                                <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword()">
+                                    <i id="passwordToggleIcon" class="fas fa-eye text-gray-400 hover:text-primary transition-colors duration-300"></i>
+                                </button>
+                            </div>
+                            <div class="text-accent text-sm min-h-5" id="passwordError"></div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="rememberMe" name="rememberMe" class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded transition-all duration-300">
+                                <span class="ml-2 text-sm text-gray-600">Recordarme</span>
+                            </label>
+                            <a href="#" class="text-sm text-secondary hover:text-primary transition-colors duration-300" onclick="showForgotPassword()">¿Olvidaste tu contraseña?</a>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 px-4 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Iniciar Sesión
+                        </button>
+
+                        <div class="relative flex items-center justify-center mt-8 mb-8">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200"></div>
+                            </div>
+                            <div class="relative bg-white px-4 text-sm text-gray-500">o</div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <button type="button" class="w-full flex items-center justify-center space-x-3 py-3 px-4 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow transition-all duration-300 text-gray-700" onclick="loginWithGoogle()">
+                                <i class="fab fa-google text-red-500"></i>
+                                <span>Continuar con Google</span>
+                            </button>
+                            <button type="button" class="w-full flex items-center justify-center space-x-3 py-3 px-4 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow transition-all duration-300 text-gray-700" onclick="loginWithMicrosoft()">
+                                <i class="fab fa-microsoft text-blue-500"></i>
+                                <span>Continuar con Microsoft</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-8">
+                        <p class="text-sm text-gray-600">¿Problemas para acceder? <a href="#" class="text-secondary hover:text-primary transition-colors duration-300" onclick="showSupport()">Contacta soporte</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para recuperar contraseña -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-primary">Recuperar Contraseña</h3>
+                <button class="text-gray-400 hover:text-gray-600 transition-colors duration-300" onclick="closeForgotPassword()">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <p class="text-gray-600 mb-4">Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
+                <form id="forgotPasswordForm" class="space-y-4">
+                    <div class="space-y-2">
+                        <label for="resetEmail" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                id="resetEmail" 
+                                name="resetEmail" 
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 outline-none" 
+                                placeholder="tu@empresa.com"
+                                required
+                            >
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-300" onclick="closeForgotPassword()">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-300">Enviar Enlace</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para funcionalidad -->
+    <script>
+        // Ocultar pantalla de verificación después de cargar
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('auth-check').style.display = 'none';
+            }, 500);
+        });
+
+        // Validación del formulario
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Limpiar errores previos
+            clearErrors();
+            
+            let isValid = true;
+            
+            // Validar email
+            if (!email) {
+                showError('emailError', 'El correo electrónico es requerido');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showError('emailError', 'Ingresa un correo electrónico válido');
+                isValid = false;
+            }
+            
+            // Validar contraseña
+            if (!password) {
+                showError('passwordError', 'La contraseña es requerida');
+                isValid = false;
+            } else if (password.length < 6) {
+                showError('passwordError', 'La contraseña debe tener al menos 6 caracteres');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                try {
+                    // Mostrar indicador de carga
+                    const submitBtn = document.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Iniciando sesión...';
+                    
+                    // Llamar a la función de login del módulo de autenticación
+                    await login(email, password, rememberMe);
+                } catch (error) {
+                    // Mostrar mensaje de error
+                    showError('passwordError', error.message || 'Error al iniciar sesión');
+                    
+                    // Restaurar botón
+                    const submitBtn = document.querySelector('button[type="submit"]');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Iniciar Sesión';
+                }
+            }
+        });
+
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Funciones de validación
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+        }
+
+        function clearErrors() {
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+        }
+
+        // Modal de recuperar contraseña
+        function showForgotPassword() {
+            const modal = document.getElementById('forgotPasswordModal');
+            const modalContent = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeForgotPassword() {
+            const modal = document.getElementById('forgotPasswordModal');
+            const modalContent = document.getElementById('modalContent');
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Formulario de recuperar contraseña
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            
+            if (email && isValidEmail(email)) {
+                // Mostrar notificación de éxito
+                alert('Se ha enviado un enlace de recuperación a ' + email);
+                closeForgotPassword();
+            } else {
+                alert('Por favor ingresa un correo electrónico válido');
+            }
+        });
+
+        // Login social (placeholder)
+        function loginWithGoogle() {
+            alert('Funcionalidad de Google OAuth en desarrollo');
+        }
+
+        function loginWithMicrosoft() {
+            alert('Funcionalidad de Microsoft OAuth en desarrollo');
+        }
+
+        function showSupport() {
+            alert('Contacta a soporte: soporte@logixport.com o +1-800-LOGIXPORT');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('forgotPasswordModal');
+            if (event.target === modal) {
+                closeForgotPassword();
+            }
+        }
+    </script>
+</body>
+</html>

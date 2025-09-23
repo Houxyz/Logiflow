@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error del servidor - LogiXport</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/header.css">
+    <link rel="stylesheet" href="/static/footer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .error-container {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #ef4444, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        
+        .error-message {
+            font-size: 1.1rem;
+            color: #6b7280;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        
+        .error-illustration {
+            width: 300px;
+            height: 200px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .error-illustration svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .home-button {
+            background: linear-gradient(to right, #ef4444, #f97316);
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3);
+        }
+        
+        .suggestions {
+            margin-top: 2rem;
+            max-width: 600px;
+        }
+        
+        .suggestions h3 {
+            font-size: 1.2rem;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .suggestions li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .suggestions li i {
+            color: #ef4444;
+        }
+        
+        .suggestions a {
+            color: #ef4444;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .suggestions a:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 640px) {
+            .error-code {
+                font-size: 6rem;
+            }
+            
+            .error-title {
+                font-size: 1.5rem;
+            }
+            
+            .error-illustration {
+                width: 250px;
+                height: 170px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="error-container">
+        <div class="error-illustration">
+            <svg viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+                <!-- Servidor con problemas -->
+                <rect x="150" y="70" width="200" height="160" rx="10" fill="#e5e7eb" />
+                
+                <!-- Luces de servidor -->
+                <circle cx="180" cy="100" r="8" fill="#ef4444" />
+                <circle cx="210" cy="100" r="8" fill="#f97316" />
+                <circle cx="240" cy="100" r="8" fill="#ef4444" />
+                
+                <!-- Ranuras de servidor -->
+                <rect x="170" y="130" width="160" height="15" rx="2" fill="#d1d5db" />
+                <rect x="170" y="155" width="160" height="15" rx="2" fill="#d1d5db" />
+                <rect x="170" y="180" width="160" height="15" rx="2" fill="#d1d5db" />
+                
+                <!-- Rayos de error -->
+                <path d="M120,150 L140,150" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+                <path d="M360,150 L380,150" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+                <path d="M250,50 L250,60" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+                <path d="M250,240 L250,250" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+                
+                <!-- Símbolo de advertencia -->
+                <path d="M250,120 L270,160 L230,160 Z" fill="#fbbf24" stroke="#f59e0b" stroke-width="2" />
+                <text x="250" y="150" text-anchor="middle" font-size="20" font-weight="bold" fill="#7c2d12">!</text>
+                
+                <!-- Nubes de humo -->
+                <circle cx="200" cy="60" r="15" fill="#9ca3af" opacity="0.6" />
+                <circle cx="220" cy="50" r="12" fill="#9ca3af" opacity="0.6" />
+                <circle cx="240" cy="55" r="18" fill="#9ca3af" opacity="0.6" />
+                <circle cx="260" cy="45" r="10" fill="#9ca3af" opacity="0.6" />
+                <circle cx="280" cy="60" r="14" fill="#9ca3af" opacity="0.6" />
+            </svg>
+        </div>
+        
+        <div class="error-code">500</div>
+        <h1 class="error-title">Error del servidor</h1>
+        <p class="error-message">
+            Lo sentimos, ha ocurrido un error inesperado en nuestros servidores.
+            Nuestro equipo técnico ha sido notificado y está trabajando para resolver el problema.
+        </p>
+        
+        <a href="/" class="home-button">
+            <i class="fas fa-home"></i> Volver al inicio
+        </a>
+        
+        <div class="suggestions">
+            <h3>¿Qué puedes hacer ahora?</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-redo"></i>
+                    <span>Intentar recargar la página después de unos minutos</span>
+                </li>
+                <li>
+                    <i class="fas fa-browser"></i>
+                    <span>Limpiar la caché de tu navegador y volver a intentarlo</span>
+                </li>
+                <li>
+                    <i class="fas fa-home"></i>
+                    <span>Volver a la <a href="/">página principal</a> y navegar desde allí</span>
+                </li>
+                <li>
+                    <i class="fas fa-envelope"></i>
+                    <span>Contactar a <a href="mailto:soporte@logixport.com">soporte@logixport.com</a> si el problema persiste</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

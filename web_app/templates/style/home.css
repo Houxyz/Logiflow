@@ -1,0 +1,441 @@
+/* Estilos para el Home con autenticación */
+.auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.auth-spinner {
+    text-align: center;
+    color: white;
+}
+
+.auth-spinner i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.auth-spinner p {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Estilos para secciones del home */
+.welcome-section {
+    text-align: center;
+    margin: 2rem 0 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.welcome-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.welcome-section p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.sections-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.expandable-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.expandable-section:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.section-header {
+    padding: 1.5rem 2rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.section-header:hover {
+    background: #e9ecef;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.section-title i {
+    font-size: 1.5rem;
+    color: #64b5f6;
+}
+
+.section-title h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.section-arrow {
+    font-size: 1.2rem;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    padding: 0 2rem;
+}
+
+.section-content.expanded {
+    max-height: none;
+    padding: 2rem;
+    overflow: visible;
+}
+
+.subsections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.subsection-card {
+    background: #f8f9fa;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    opacity: 0;
+    transform: translateY(20px);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.subsection-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.subsection-card:hover {
+    transform: translateY(-5px);
+    border-color: #64b5f6;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.subsection-card i {
+    font-size: 2.5rem;
+    color: #64b5f6;
+    margin-bottom: 1rem;
+}
+
+.subsection-card h4 {
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.subsection-card p {
+    margin: 0 0 1.5rem 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.subsection-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.subsection-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Estilos para el header del home */
+.logout-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logout-btn:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.user-info i {
+    font-size: 1.5rem;
+    color: #64b5f6;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ===== ESTILOS PARA BIENVENIDA MEJORADA ===== */
+.welcome-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #667eea 100%);
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.welcome-text {
+    flex: 1;
+}
+
+.welcome-text h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #ffffff, #f0f8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-text p {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.welcome-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+/* Layout mejorado para pantallas grandes - más espacioso */
+@media (min-width: 1200px) {
+    .sections-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+    
+    /* La sección de bienvenida ocupa todo el ancho */
+    .welcome-section {
+        grid-column: 1 / -1;
+        margin-bottom: 3rem;
+    }
+    
+    /* Subsecciones con mejor espaciado */
+    .subsections-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+    
+    /* Sección de bienvenida más equilibrada */
+    .welcome-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: none;
+    }
+    
+    .welcome-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        margin-top: 2rem;
+        justify-items: center;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 2rem;
+        min-width: 150px;
+    }
+}
+
+/* Para pantallas extra grandes - mantener diseño equilibrado */
+@media (min-width: 1600px) {
+    .sections-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .subsections-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+    }
+    
+    .container {
+        padding: 2rem 3rem;
+    }
+    
+    /* Tarjetas con mejor proporción */
+    .subsection-card, .pdf-card {
+        padding: 2rem;
+        min-height: 200px;
+    }
+    
+    /* Estadísticas más espaciosas */
+    .welcome-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4rem;
+        max-width: 800px;
+        margin: 2rem auto 0;
+    }
+}
+
+/* Asegurar diseño responsive para móviles */
+@media (max-width: 768px) {
+    .sections-container {
+        display: block !important;
+        grid-template-columns: none !important;
+        gap: 1rem;
+    }
+    
+    .welcome-content {
+        display: block !important;
+        grid-template-columns: none !important;
+        gap: 1rem;
+    }
+    
+    .welcome-stats {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .subsections-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+    
+    .container {
+        padding: 1rem !important;
+        max-width: 100% !important;
+    }
+    
+    .welcome-section {
+        margin: 1rem 0 2rem 0;
+        padding: 1.5rem;
+    }
+
+    .welcome-section h1 {
+        font-size: 2rem;
+    }
+
+    .welcome-section p {
+        font-size: 1rem;
+    }
+
+    .section-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .section-title h3 {
+        font-size: 1.1rem;
+    }
+
+    .section-content.expanded {
+        padding: 1.5rem;
+    }
+
+    .subsection-card {
+        padding: 1.5rem;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-stats {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .stat-item {
+        padding: 1rem !important;
+    }
+    
+    .container {
+        padding: 0.5rem !important;
+    }
+}
